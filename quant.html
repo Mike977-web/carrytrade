@@ -36,6 +36,10 @@ td.c-reason { text-align:left; font-size:10px; color:#6b7280; max-width:160px; o
 .sig-badge { font-size:10px; font-weight:600; padding:2px 6px; border-radius:8px; white-space:nowrap; }
 .row-观望 td { color:#9ca3af; }
 .note { background:#fffbeb; border:1px solid #fde68a; color:#92400e; font-size:11px; padding:8px 12px; margin:10px 14px 0; border-radius:8px; line-height:1.6; }
+.sector-bar { display:flex; gap:6px; padding:8px 10px 0; flex-wrap:wrap; align-items:center; }
+.sector-label { font-size:11px; color:#6b7280; }
+.sector-btn { font-size:11px; padding:4px 10px; border-radius:14px; background:#fff; border:1px solid #d1d5db; color:#4b5563; cursor:pointer; white-space:nowrap; }
+.sector-btn.active { background:#0d9488; color:#fff; border-color:#0d9488; }
 .footer { text-align:center; font-size:11px; color:#9ca3af; padding:16px 14px; }
 </style>
 </head>
@@ -48,7 +52,7 @@ td.c-reason { text-align:left; font-size:10px; color:#6b7280; max-width:160px; o
 <div class="header">
   <h1>📈 EMA 两级共振趋势策略</h1>
   <div class="sub">大级别(周线): 价在EMA60上方+斜率向上=多头环境 ｜ 小级别(2h): EMA26/60金叉+ADX&gt;20=入场<br>止损: ATR(14)×2.5 · 共振=周线方向与2h信号一致</div>
-  <div class="time">数据更新: 2026-08-09 12:54:53</div>
+  <div class="time">数据更新: 2026-08-09 15:45:17</div>
 </div>
 
 <div class="summary">
@@ -57,6 +61,12 @@ td.c-reason { text-align:left; font-size:10px; color:#6b7280; max-width:160px; o
   <div class="s-item s-yellow"><span class="s-num">23</span><span class="s-lab">多头待命</span></div>
   <div class="s-item s-orange"><span class="s-num">18</span><span class="s-lab">空头待命</span></div>
   <div class="s-item"><span class="s-num" style="color:#6b7280">78</span><span class="s-lab">监控品种</span></div>
+</div>
+
+<div class="sector-bar">
+  <span class="sector-label">板块筛选:</span>
+  <div class="sector-btn active" data-sector="all">全部(78)</div>
+  <div class="sector-btn" data-sector="能源化工">能源化工(23)</div><div class="sector-btn" data-sector="农产品">农产品(18)</div><div class="sector-btn" data-sector="金属">金属(16)</div><div class="sector-btn" data-sector="黑色建材">黑色建材(12)</div><div class="sector-btn" data-sector="金融">金融(9)</div>
 </div>
 
 <div class="note">⚠️ 2小时K线需在交易时段才有实时数据；非交易时段/收盘后用最近已收K线计算。信号按共振强度排序，仅供研究参考。</div>
@@ -74,7 +84,7 @@ td.c-reason { text-align:left; font-size:10px; color:#6b7280; max-width:160px; o
         <th>综合信号</th><th>说明</th>
       </tr></thead>
       <tbody>
-        <tr class="row-多头待命">
+        <tr class="row-多头待命" data-sector="农产品">
           <td class="c-code">CF</td>
           <td class="c-name">棉花主连</td>
           <td class="c-sec">农产品</td>
@@ -85,18 +95,18 @@ td.c-reason { text-align:left; font-size:10px; color:#6b7280; max-width:160px; o
           <td class="c-stop">—</td>
           <td><span class="sig-badge" style="color:#ca8a04;background:#fef9c3">多头待命</span></td>
           <td class="c-reason">周线多头，2h EMA26>60但未金叉</td>
-        </tr><tr class="row-多头待命">
+        </tr><tr class="row-多头待命" data-sector="农产品">
           <td class="c-code">CY</td>
           <td class="c-name">棉纱主连</td>
           <td class="c-sec">农产品</td>
           <td>🟢多</td>
           <td>—</td>
-          <td style="color:#16a34a;font-weight:600">43.4</td>
+          <td style="color:#16a34a;font-weight:600">43.2</td>
           <td class="c-entry">—</td>
           <td class="c-stop">—</td>
           <td><span class="sig-badge" style="color:#ca8a04;background:#fef9c3">多头待命</span></td>
           <td class="c-reason">周线多头，2h EMA26>60但未金叉</td>
-        </tr><tr class="row-多头待命">
+        </tr><tr class="row-多头待命" data-sector="金融">
           <td class="c-code">IC</td>
           <td class="c-name">中证主连</td>
           <td class="c-sec">金融</td>
@@ -107,7 +117,7 @@ td.c-reason { text-align:left; font-size:10px; color:#6b7280; max-width:160px; o
           <td class="c-stop">—</td>
           <td><span class="sig-badge" style="color:#ca8a04;background:#fef9c3">多头待命</span></td>
           <td class="c-reason">周线多头，2h EMA26>60，ADX19.7偏弱</td>
-        </tr><tr class="row-多头待命">
+        </tr><tr class="row-多头待命" data-sector="金融">
           <td class="c-code">IH</td>
           <td class="c-name">上证主连</td>
           <td class="c-sec">金融</td>
@@ -118,7 +128,7 @@ td.c-reason { text-align:left; font-size:10px; color:#6b7280; max-width:160px; o
           <td class="c-stop">—</td>
           <td><span class="sig-badge" style="color:#ca8a04;background:#fef9c3">多头待命</span></td>
           <td class="c-reason">周线多头，2h EMA26>60但未金叉，ADX13.9偏弱</td>
-        </tr><tr class="row-多头待命">
+        </tr><tr class="row-多头待命" data-sector="金融">
           <td class="c-code">IM</td>
           <td class="c-name">IM主连</td>
           <td class="c-sec">金融</td>
@@ -129,7 +139,7 @@ td.c-reason { text-align:left; font-size:10px; color:#6b7280; max-width:160px; o
           <td class="c-stop">—</td>
           <td><span class="sig-badge" style="color:#ca8a04;background:#fef9c3">多头待命</span></td>
           <td class="c-reason">周线多头，2h EMA26>60但未金叉</td>
-        </tr><tr class="row-多头待命">
+        </tr><tr class="row-多头待命" data-sector="农产品">
           <td class="c-code">OI</td>
           <td class="c-name">菜油主连</td>
           <td class="c-sec">农产品</td>
@@ -140,18 +150,18 @@ td.c-reason { text-align:left; font-size:10px; color:#6b7280; max-width:160px; o
           <td class="c-stop">—</td>
           <td><span class="sig-badge" style="color:#ca8a04;background:#fef9c3">多头待命</span></td>
           <td class="c-reason">周线多头，2h EMA26>60但未金叉</td>
-        </tr><tr class="row-多头待命">
+        </tr><tr class="row-多头待命" data-sector="黑色建材">
           <td class="c-code">SF</td>
           <td class="c-name">硅铁主连</td>
           <td class="c-sec">黑色建材</td>
           <td>🟢多</td>
           <td>—</td>
-          <td style="color:#16a34a;font-weight:600">23.4</td>
+          <td style="color:#9ca3af;font-weight:600">11.8</td>
           <td class="c-entry">—</td>
           <td class="c-stop">—</td>
           <td><span class="sig-badge" style="color:#ca8a04;background:#fef9c3">多头待命</span></td>
-          <td class="c-reason">周线多头，2h EMA26>60但未金叉</td>
-        </tr><tr class="row-多头待命">
+          <td class="c-reason">周线多头，2h EMA26>60但未金叉，ADX11.8偏弱</td>
+        </tr><tr class="row-多头待命" data-sector="金融">
           <td class="c-code">T</td>
           <td class="c-name">债十主连</td>
           <td class="c-sec">金融</td>
@@ -162,7 +172,7 @@ td.c-reason { text-align:left; font-size:10px; color:#6b7280; max-width:160px; o
           <td class="c-stop">—</td>
           <td><span class="sig-badge" style="color:#ca8a04;background:#fef9c3">多头待命</span></td>
           <td class="c-reason">周线多头，2h EMA26>60但未金叉</td>
-        </tr><tr class="row-多头待命">
+        </tr><tr class="row-多头待命" data-sector="金融">
           <td class="c-code">TF</td>
           <td class="c-name">债五主连</td>
           <td class="c-sec">金融</td>
@@ -173,7 +183,7 @@ td.c-reason { text-align:left; font-size:10px; color:#6b7280; max-width:160px; o
           <td class="c-stop">—</td>
           <td><span class="sig-badge" style="color:#ca8a04;background:#fef9c3">多头待命</span></td>
           <td class="c-reason">周线多头，2h EMA26>60但未金叉，ADX13.9偏弱</td>
-        </tr><tr class="row-多头待命">
+        </tr><tr class="row-多头待命" data-sector="金融">
           <td class="c-code">TL</td>
           <td class="c-name">债三十主连</td>
           <td class="c-sec">金融</td>
@@ -184,7 +194,7 @@ td.c-reason { text-align:left; font-size:10px; color:#6b7280; max-width:160px; o
           <td class="c-stop">—</td>
           <td><span class="sig-badge" style="color:#ca8a04;background:#fef9c3">多头待命</span></td>
           <td class="c-reason">周线多头，2h EMA26>60但未金叉，ADX15.2偏弱</td>
-        </tr><tr class="row-多头待命">
+        </tr><tr class="row-多头待命" data-sector="农产品">
           <td class="c-code">a</td>
           <td class="c-name">豆一主连</td>
           <td class="c-sec">农产品</td>
@@ -195,7 +205,7 @@ td.c-reason { text-align:left; font-size:10px; color:#6b7280; max-width:160px; o
           <td class="c-stop">—</td>
           <td><span class="sig-badge" style="color:#ca8a04;background:#fef9c3">多头待命</span></td>
           <td class="c-reason">周线多头，2h EMA26>60但未金叉</td>
-        </tr><tr class="row-多头待命">
+        </tr><tr class="row-多头待命" data-sector="金属">
           <td class="c-code">ag</td>
           <td class="c-name">沪银主连</td>
           <td class="c-sec">金属</td>
@@ -206,7 +216,7 @@ td.c-reason { text-align:left; font-size:10px; color:#6b7280; max-width:160px; o
           <td class="c-stop">—</td>
           <td><span class="sig-badge" style="color:#ca8a04;background:#fef9c3">多头待命</span></td>
           <td class="c-reason">周线多头，2h EMA26>60但未金叉</td>
-        </tr><tr class="row-多头待命">
+        </tr><tr class="row-多头待命" data-sector="金属">
           <td class="c-code">al</td>
           <td class="c-name">沪铝主连</td>
           <td class="c-sec">金属</td>
@@ -217,7 +227,7 @@ td.c-reason { text-align:left; font-size:10px; color:#6b7280; max-width:160px; o
           <td class="c-stop">—</td>
           <td><span class="sig-badge" style="color:#ca8a04;background:#fef9c3">多头待命</span></td>
           <td class="c-reason">周线多头，2h EMA26>60但未金叉</td>
-        </tr><tr class="row-多头待命">
+        </tr><tr class="row-多头待命" data-sector="金属">
           <td class="c-code">au</td>
           <td class="c-name">沪金主连</td>
           <td class="c-sec">金属</td>
@@ -228,7 +238,7 @@ td.c-reason { text-align:left; font-size:10px; color:#6b7280; max-width:160px; o
           <td class="c-stop">—</td>
           <td><span class="sig-badge" style="color:#ca8a04;background:#fef9c3">多头待命</span></td>
           <td class="c-reason">周线多头，2h EMA26>60但未金叉</td>
-        </tr><tr class="row-多头待命">
+        </tr><tr class="row-多头待命" data-sector="金属">
           <td class="c-code">bc</td>
           <td class="c-name">国际铜主连</td>
           <td class="c-sec">金属</td>
@@ -239,7 +249,7 @@ td.c-reason { text-align:left; font-size:10px; color:#6b7280; max-width:160px; o
           <td class="c-stop">—</td>
           <td><span class="sig-badge" style="color:#ca8a04;background:#fef9c3">多头待命</span></td>
           <td class="c-reason">周线多头，2h EMA26>60但未金叉</td>
-        </tr><tr class="row-多头待命">
+        </tr><tr class="row-多头待命" data-sector="金属">
           <td class="c-code">cu</td>
           <td class="c-name">沪铜主连</td>
           <td class="c-sec">金属</td>
@@ -250,7 +260,7 @@ td.c-reason { text-align:left; font-size:10px; color:#6b7280; max-width:160px; o
           <td class="c-stop">—</td>
           <td><span class="sig-badge" style="color:#ca8a04;background:#fef9c3">多头待命</span></td>
           <td class="c-reason">周线多头，2h EMA26>60但未金叉</td>
-        </tr><tr class="row-多头待命">
+        </tr><tr class="row-多头待命" data-sector="黑色建材">
           <td class="c-code">j</td>
           <td class="c-name">焦炭主连</td>
           <td class="c-sec">黑色建材</td>
@@ -261,7 +271,7 @@ td.c-reason { text-align:left; font-size:10px; color:#6b7280; max-width:160px; o
           <td class="c-stop">—</td>
           <td><span class="sig-badge" style="color:#ca8a04;background:#fef9c3">多头待命</span></td>
           <td class="c-reason">周线多头，2h EMA26>60但未金叉</td>
-        </tr><tr class="row-多头待命">
+        </tr><tr class="row-多头待命" data-sector="黑色建材">
           <td class="c-code">lg</td>
           <td class="c-name">原木主连</td>
           <td class="c-sec">黑色建材</td>
@@ -272,7 +282,7 @@ td.c-reason { text-align:left; font-size:10px; color:#6b7280; max-width:160px; o
           <td class="c-stop">—</td>
           <td><span class="sig-badge" style="color:#ca8a04;background:#fef9c3">多头待命</span></td>
           <td class="c-reason">周线多头，2h EMA26>60但未金叉，ADX19.0偏弱</td>
-        </tr><tr class="row-多头待命">
+        </tr><tr class="row-多头待命" data-sector="能源化工">
           <td class="c-code">nr</td>
           <td class="c-name">20号胶主连</td>
           <td class="c-sec">能源化工</td>
@@ -283,7 +293,7 @@ td.c-reason { text-align:left; font-size:10px; color:#6b7280; max-width:160px; o
           <td class="c-stop">—</td>
           <td><span class="sig-badge" style="color:#ca8a04;background:#fef9c3">多头待命</span></td>
           <td class="c-reason">周线多头，2h EMA26>60但未金叉</td>
-        </tr><tr class="row-多头待命">
+        </tr><tr class="row-多头待命" data-sector="农产品">
           <td class="c-code">rr</td>
           <td class="c-name">粳米主连</td>
           <td class="c-sec">农产品</td>
@@ -294,7 +304,7 @@ td.c-reason { text-align:left; font-size:10px; color:#6b7280; max-width:160px; o
           <td class="c-stop">—</td>
           <td><span class="sig-badge" style="color:#ca8a04;background:#fef9c3">多头待命</span></td>
           <td class="c-reason">周线多头，2h EMA26>60但未金叉</td>
-        </tr><tr class="row-多头待命">
+        </tr><tr class="row-多头待命" data-sector="能源化工">
           <td class="c-code">ru</td>
           <td class="c-name">橡胶主连</td>
           <td class="c-sec">能源化工</td>
@@ -305,7 +315,7 @@ td.c-reason { text-align:left; font-size:10px; color:#6b7280; max-width:160px; o
           <td class="c-stop">—</td>
           <td><span class="sig-badge" style="color:#ca8a04;background:#fef9c3">多头待命</span></td>
           <td class="c-reason">周线多头，2h EMA26>60但未金叉</td>
-        </tr><tr class="row-多头待命">
+        </tr><tr class="row-多头待命" data-sector="金属">
           <td class="c-code">sn</td>
           <td class="c-name">沪锡主连</td>
           <td class="c-sec">金属</td>
@@ -316,7 +326,7 @@ td.c-reason { text-align:left; font-size:10px; color:#6b7280; max-width:160px; o
           <td class="c-stop">—</td>
           <td><span class="sig-badge" style="color:#ca8a04;background:#fef9c3">多头待命</span></td>
           <td class="c-reason">周线多头，2h EMA26>60但未金叉，ADX18.3偏弱</td>
-        </tr><tr class="row-多头待命">
+        </tr><tr class="row-多头待命" data-sector="金属">
           <td class="c-code">zn</td>
           <td class="c-name">沪锌主连</td>
           <td class="c-sec">金属</td>
@@ -327,7 +337,7 @@ td.c-reason { text-align:left; font-size:10px; color:#6b7280; max-width:160px; o
           <td class="c-stop">—</td>
           <td><span class="sig-badge" style="color:#ca8a04;background:#fef9c3">多头待命</span></td>
           <td class="c-reason">周线多头，2h EMA26>60但未金叉</td>
-        </tr><tr class="row-空头待命">
+        </tr><tr class="row-空头待命" data-sector="农产品">
           <td class="c-code">CJ</td>
           <td class="c-name">红枣主连</td>
           <td class="c-sec">农产品</td>
@@ -338,7 +348,7 @@ td.c-reason { text-align:left; font-size:10px; color:#6b7280; max-width:160px; o
           <td class="c-stop">—</td>
           <td><span class="sig-badge" style="color:#ea580c;background:#ffedd5">空头待命</span></td>
           <td class="c-reason">周线空头，2h EMA26<60但未死叉，ADX16.5偏弱</td>
-        </tr><tr class="row-空头待命">
+        </tr><tr class="row-空头待命" data-sector="黑色建材">
           <td class="c-code">FG</td>
           <td class="c-name">玻璃主连</td>
           <td class="c-sec">黑色建材</td>
@@ -349,7 +359,7 @@ td.c-reason { text-align:left; font-size:10px; color:#6b7280; max-width:160px; o
           <td class="c-stop">—</td>
           <td><span class="sig-badge" style="color:#ea580c;background:#ffedd5">空头待命</span></td>
           <td class="c-reason">周线空头，2h EMA26<60但未死叉，ADX17.4偏弱</td>
-        </tr><tr class="row-空头待命">
+        </tr><tr class="row-空头待命" data-sector="能源化工">
           <td class="c-code">MA</td>
           <td class="c-name">甲醇主连</td>
           <td class="c-sec">能源化工</td>
@@ -360,7 +370,7 @@ td.c-reason { text-align:left; font-size:10px; color:#6b7280; max-width:160px; o
           <td class="c-stop">—</td>
           <td><span class="sig-badge" style="color:#ea580c;background:#ffedd5">空头待命</span></td>
           <td class="c-reason">周线空头，2h EMA26<60但未死叉，ADX18.2偏弱</td>
-        </tr><tr class="row-空头待命">
+        </tr><tr class="row-空头待命" data-sector="农产品">
           <td class="c-code">RM</td>
           <td class="c-name">菜粕主连</td>
           <td class="c-sec">农产品</td>
@@ -371,7 +381,7 @@ td.c-reason { text-align:left; font-size:10px; color:#6b7280; max-width:160px; o
           <td class="c-stop">—</td>
           <td><span class="sig-badge" style="color:#ea580c;background:#ffedd5">空头待命</span></td>
           <td class="c-reason">周线空头，2h EMA26<60但未死叉，ADX10.5偏弱</td>
-        </tr><tr class="row-空头待命">
+        </tr><tr class="row-空头待命" data-sector="黑色建材">
           <td class="c-code">SA</td>
           <td class="c-name">纯碱主连</td>
           <td class="c-sec">黑色建材</td>
@@ -382,7 +392,7 @@ td.c-reason { text-align:left; font-size:10px; color:#6b7280; max-width:160px; o
           <td class="c-stop">—</td>
           <td><span class="sig-badge" style="color:#ea580c;background:#ffedd5">空头待命</span></td>
           <td class="c-reason">周线空头，2h EMA26<60但未死叉，ADX16.2偏弱</td>
-        </tr><tr class="row-空头待命">
+        </tr><tr class="row-空头待命" data-sector="黑色建材">
           <td class="c-code">SM</td>
           <td class="c-name">锰硅主连</td>
           <td class="c-sec">黑色建材</td>
@@ -393,7 +403,7 @@ td.c-reason { text-align:left; font-size:10px; color:#6b7280; max-width:160px; o
           <td class="c-stop">—</td>
           <td><span class="sig-badge" style="color:#ea580c;background:#ffedd5">空头待命</span></td>
           <td class="c-reason">周线空头，2h EMA26<60但未死叉，ADX9.6偏弱</td>
-        </tr><tr class="row-空头待命">
+        </tr><tr class="row-空头待命" data-sector="能源化工">
           <td class="c-code">UR</td>
           <td class="c-name">尿素主连</td>
           <td class="c-sec">能源化工</td>
@@ -404,7 +414,7 @@ td.c-reason { text-align:left; font-size:10px; color:#6b7280; max-width:160px; o
           <td class="c-stop">—</td>
           <td><span class="sig-badge" style="color:#ea580c;background:#ffedd5">空头待命</span></td>
           <td class="c-reason">周线空头，2h EMA26<60但未死叉，ADX19.0偏弱</td>
-        </tr><tr class="row-空头待命">
+        </tr><tr class="row-空头待命" data-sector="能源化工">
           <td class="c-code">br</td>
           <td class="c-name">丁橡胶主连</td>
           <td class="c-sec">能源化工</td>
@@ -415,7 +425,7 @@ td.c-reason { text-align:left; font-size:10px; color:#6b7280; max-width:160px; o
           <td class="c-stop">—</td>
           <td><span class="sig-badge" style="color:#ea580c;background:#ffedd5">空头待命</span></td>
           <td class="c-reason">周线空头，2h EMA26<60但未死叉，ADX16.1偏弱</td>
-        </tr><tr class="row-空头待命">
+        </tr><tr class="row-空头待命" data-sector="农产品">
           <td class="c-code">c</td>
           <td class="c-name">玉米主连</td>
           <td class="c-sec">农产品</td>
@@ -426,7 +436,7 @@ td.c-reason { text-align:left; font-size:10px; color:#6b7280; max-width:160px; o
           <td class="c-stop">—</td>
           <td><span class="sig-badge" style="color:#ea580c;background:#ffedd5">空头待命</span></td>
           <td class="c-reason">周线空头，2h EMA26<60但未死叉，ADX13.2偏弱</td>
-        </tr><tr class="row-空头待命">
+        </tr><tr class="row-空头待命" data-sector="农产品">
           <td class="c-code">cs</td>
           <td class="c-name">淀粉主连</td>
           <td class="c-sec">农产品</td>
@@ -437,7 +447,7 @@ td.c-reason { text-align:left; font-size:10px; color:#6b7280; max-width:160px; o
           <td class="c-stop">—</td>
           <td><span class="sig-badge" style="color:#ea580c;background:#ffedd5">空头待命</span></td>
           <td class="c-reason">周线空头，2h EMA26<60但未死叉</td>
-        </tr><tr class="row-空头待命">
+        </tr><tr class="row-空头待命" data-sector="金融">
           <td class="c-code">ec</td>
           <td class="c-name">欧线集运主连</td>
           <td class="c-sec">金融</td>
@@ -448,7 +458,7 @@ td.c-reason { text-align:left; font-size:10px; color:#6b7280; max-width:160px; o
           <td class="c-stop">—</td>
           <td><span class="sig-badge" style="color:#ea580c;background:#ffedd5">空头待命</span></td>
           <td class="c-reason">周线空头，2h EMA26<60但未死叉</td>
-        </tr><tr class="row-空头待命">
+        </tr><tr class="row-空头待命" data-sector="黑色建材">
           <td class="c-code">hc</td>
           <td class="c-name">热卷主连</td>
           <td class="c-sec">黑色建材</td>
@@ -459,7 +469,7 @@ td.c-reason { text-align:left; font-size:10px; color:#6b7280; max-width:160px; o
           <td class="c-stop">—</td>
           <td><span class="sig-badge" style="color:#ea580c;background:#ffedd5">空头待命</span></td>
           <td class="c-reason">周线空头，2h EMA26<60但未死叉</td>
-        </tr><tr class="row-空头待命">
+        </tr><tr class="row-空头待命" data-sector="黑色建材">
           <td class="c-code">i</td>
           <td class="c-name">铁矿主连</td>
           <td class="c-sec">黑色建材</td>
@@ -470,7 +480,7 @@ td.c-reason { text-align:left; font-size:10px; color:#6b7280; max-width:160px; o
           <td class="c-stop">—</td>
           <td><span class="sig-badge" style="color:#ea580c;background:#ffedd5">空头待命</span></td>
           <td class="c-reason">周线空头，2h EMA26<60但未死叉，ADX17.2偏弱</td>
-        </tr><tr class="row-空头待命">
+        </tr><tr class="row-空头待命" data-sector="金属">
           <td class="c-code">ni</td>
           <td class="c-name">沪镍主连</td>
           <td class="c-sec">金属</td>
@@ -481,7 +491,7 @@ td.c-reason { text-align:left; font-size:10px; color:#6b7280; max-width:160px; o
           <td class="c-stop">—</td>
           <td><span class="sig-badge" style="color:#ea580c;background:#ffedd5">空头待命</span></td>
           <td class="c-reason">周线空头，2h EMA26<60但未死叉，ADX14.9偏弱</td>
-        </tr><tr class="row-空头待命">
+        </tr><tr class="row-空头待命" data-sector="黑色建材">
           <td class="c-code">rb</td>
           <td class="c-name">螺纹主连</td>
           <td class="c-sec">黑色建材</td>
@@ -492,7 +502,7 @@ td.c-reason { text-align:left; font-size:10px; color:#6b7280; max-width:160px; o
           <td class="c-stop">—</td>
           <td><span class="sig-badge" style="color:#ea580c;background:#ffedd5">空头待命</span></td>
           <td class="c-reason">周线空头，2h EMA26<60但未死叉，ADX18.5偏弱</td>
-        </tr><tr class="row-空头待命">
+        </tr><tr class="row-空头待命" data-sector="能源化工">
           <td class="c-code">sc</td>
           <td class="c-name">原油主连</td>
           <td class="c-sec">能源化工</td>
@@ -503,7 +513,7 @@ td.c-reason { text-align:left; font-size:10px; color:#6b7280; max-width:160px; o
           <td class="c-stop">—</td>
           <td><span class="sig-badge" style="color:#ea580c;background:#ffedd5">空头待命</span></td>
           <td class="c-reason">周线空头，2h EMA26<60但未死叉，ADX19.4偏弱</td>
-        </tr><tr class="row-空头待命">
+        </tr><tr class="row-空头待命" data-sector="能源化工">
           <td class="c-code">sp</td>
           <td class="c-name">纸浆主连</td>
           <td class="c-sec">能源化工</td>
@@ -514,7 +524,7 @@ td.c-reason { text-align:left; font-size:10px; color:#6b7280; max-width:160px; o
           <td class="c-stop">—</td>
           <td><span class="sig-badge" style="color:#ea580c;background:#ffedd5">空头待命</span></td>
           <td class="c-reason">周线空头，2h EMA26<60但未死叉，ADX8.6偏弱</td>
-        </tr><tr class="row-空头待命">
+        </tr><tr class="row-空头待命" data-sector="黑色建材">
           <td class="c-code">v</td>
           <td class="c-name">PVC主连</td>
           <td class="c-sec">黑色建材</td>
@@ -525,7 +535,7 @@ td.c-reason { text-align:left; font-size:10px; color:#6b7280; max-width:160px; o
           <td class="c-stop">—</td>
           <td><span class="sig-badge" style="color:#ea580c;background:#ffedd5">空头待命</span></td>
           <td class="c-reason">周线空头，2h EMA26<60但未死叉，ADX13.6偏弱</td>
-        </tr><tr class="row-观望">
+        </tr><tr class="row-观望" data-sector="农产品">
           <td class="c-code">AP</td>
           <td class="c-name">苹果主连</td>
           <td class="c-sec">农产品</td>
@@ -536,7 +546,7 @@ td.c-reason { text-align:left; font-size:10px; color:#6b7280; max-width:160px; o
           <td class="c-stop">—</td>
           <td><span class="sig-badge" style="color:#6b7280;background:#f3f4f6">观望</span></td>
           <td class="c-reason">周线空，级别未共振</td>
-        </tr><tr class="row-观望">
+        </tr><tr class="row-观望" data-sector="金融">
           <td class="c-code">IF</td>
           <td class="c-name">沪深主连</td>
           <td class="c-sec">金融</td>
@@ -547,18 +557,18 @@ td.c-reason { text-align:left; font-size:10px; color:#6b7280; max-width:160px; o
           <td class="c-stop">—</td>
           <td><span class="sig-badge" style="color:#6b7280;background:#f3f4f6">观望</span></td>
           <td class="c-reason">周线多，级别未共振</td>
-        </tr><tr class="row-观望">
+        </tr><tr class="row-观望" data-sector="能源化工">
           <td class="c-code">PF</td>
           <td class="c-name">短纤主连</td>
           <td class="c-sec">能源化工</td>
           <td>🟢多</td>
           <td>—</td>
-          <td style="color:#9ca3af;font-weight:600">17.1</td>
+          <td style="color:#9ca3af;font-weight:600">17.0</td>
           <td class="c-entry">—</td>
           <td class="c-stop">—</td>
           <td><span class="sig-badge" style="color:#6b7280;background:#f3f4f6">观望</span></td>
           <td class="c-reason">周线多，级别未共振</td>
-        </tr><tr class="row-观望">
+        </tr><tr class="row-观望" data-sector="农产品">
           <td class="c-code">PK</td>
           <td class="c-name">花生仁主连</td>
           <td class="c-sec">农产品</td>
@@ -569,18 +579,18 @@ td.c-reason { text-align:left; font-size:10px; color:#6b7280; max-width:160px; o
           <td class="c-stop">—</td>
           <td><span class="sig-badge" style="color:#6b7280;background:#f3f4f6">观望</span></td>
           <td class="c-reason">周线多，级别未共振</td>
-        </tr><tr class="row-观望">
+        </tr><tr class="row-观望" data-sector="能源化工">
           <td class="c-code">PR</td>
           <td class="c-name">瓶片主连</td>
           <td class="c-sec">能源化工</td>
           <td>🟢多</td>
           <td>—</td>
-          <td style="color:#9ca3af;font-weight:600">19.8</td>
+          <td style="color:#9ca3af;font-weight:600">19.6</td>
           <td class="c-entry">—</td>
           <td class="c-stop">—</td>
           <td><span class="sig-badge" style="color:#6b7280;background:#f3f4f6">观望</span></td>
           <td class="c-reason">周线多，级别未共振</td>
-        </tr><tr class="row-观望">
+        </tr><tr class="row-观望" data-sector="能源化工">
           <td class="c-code">PX</td>
           <td class="c-name">对二甲苯主连</td>
           <td class="c-sec">能源化工</td>
@@ -591,7 +601,7 @@ td.c-reason { text-align:left; font-size:10px; color:#6b7280; max-width:160px; o
           <td class="c-stop">—</td>
           <td><span class="sig-badge" style="color:#6b7280;background:#f3f4f6">观望</span></td>
           <td class="c-reason">周线多，级别未共振</td>
-        </tr><tr class="row-观望">
+        </tr><tr class="row-观望" data-sector="能源化工">
           <td class="c-code">SH</td>
           <td class="c-name">烧碱主连</td>
           <td class="c-sec">能源化工</td>
@@ -602,7 +612,7 @@ td.c-reason { text-align:left; font-size:10px; color:#6b7280; max-width:160px; o
           <td class="c-stop">—</td>
           <td><span class="sig-badge" style="color:#6b7280;background:#f3f4f6">观望</span></td>
           <td class="c-reason">周线空，级别未共振</td>
-        </tr><tr class="row-观望">
+        </tr><tr class="row-观望" data-sector="农产品">
           <td class="c-code">SR</td>
           <td class="c-name">白糖主连</td>
           <td class="c-sec">农产品</td>
@@ -613,7 +623,7 @@ td.c-reason { text-align:left; font-size:10px; color:#6b7280; max-width:160px; o
           <td class="c-stop">—</td>
           <td><span class="sig-badge" style="color:#6b7280;background:#f3f4f6">观望</span></td>
           <td class="c-reason">周线空，级别未共振</td>
-        </tr><tr class="row-观望">
+        </tr><tr class="row-观望" data-sector="能源化工">
           <td class="c-code">TA</td>
           <td class="c-name">PTA主连</td>
           <td class="c-sec">能源化工</td>
@@ -624,7 +634,7 @@ td.c-reason { text-align:left; font-size:10px; color:#6b7280; max-width:160px; o
           <td class="c-stop">—</td>
           <td><span class="sig-badge" style="color:#6b7280;background:#f3f4f6">观望</span></td>
           <td class="c-reason">周线多，级别未共振</td>
-        </tr><tr class="row-观望">
+        </tr><tr class="row-观望" data-sector="金融">
           <td class="c-code">TS</td>
           <td class="c-name">债二主连</td>
           <td class="c-sec">金融</td>
@@ -635,7 +645,7 @@ td.c-reason { text-align:left; font-size:10px; color:#6b7280; max-width:160px; o
           <td class="c-stop">—</td>
           <td><span class="sig-badge" style="color:#6b7280;background:#f3f4f6">观望</span></td>
           <td class="c-reason">周线平，级别未共振</td>
-        </tr><tr class="row-观望">
+        </tr><tr class="row-观望" data-sector="金属">
           <td class="c-code">ao</td>
           <td class="c-name">氧化铝主连</td>
           <td class="c-sec">金属</td>
@@ -646,7 +656,7 @@ td.c-reason { text-align:left; font-size:10px; color:#6b7280; max-width:160px; o
           <td class="c-stop">—</td>
           <td><span class="sig-badge" style="color:#6b7280;background:#f3f4f6">观望</span></td>
           <td class="c-reason">周线空，级别未共振</td>
-        </tr><tr class="row-观望">
+        </tr><tr class="row-观望" data-sector="农产品">
           <td class="c-code">b</td>
           <td class="c-name">豆二主连</td>
           <td class="c-sec">农产品</td>
@@ -657,7 +667,7 @@ td.c-reason { text-align:left; font-size:10px; color:#6b7280; max-width:160px; o
           <td class="c-stop">—</td>
           <td><span class="sig-badge" style="color:#6b7280;background:#f3f4f6">观望</span></td>
           <td class="c-reason">周线多，级别未共振</td>
-        </tr><tr class="row-观望">
+        </tr><tr class="row-观望" data-sector="能源化工">
           <td class="c-code">bu</td>
           <td class="c-name">沥青主连</td>
           <td class="c-sec">能源化工</td>
@@ -668,7 +678,7 @@ td.c-reason { text-align:left; font-size:10px; color:#6b7280; max-width:160px; o
           <td class="c-stop">—</td>
           <td><span class="sig-badge" style="color:#6b7280;background:#f3f4f6">观望</span></td>
           <td class="c-reason">周线多，级别未共振</td>
-        </tr><tr class="row-观望">
+        </tr><tr class="row-观望" data-sector="能源化工">
           <td class="c-code">eb</td>
           <td class="c-name">苯乙烯主连</td>
           <td class="c-sec">能源化工</td>
@@ -679,7 +689,7 @@ td.c-reason { text-align:left; font-size:10px; color:#6b7280; max-width:160px; o
           <td class="c-stop">—</td>
           <td><span class="sig-badge" style="color:#6b7280;background:#f3f4f6">观望</span></td>
           <td class="c-reason">周线多，级别未共振</td>
-        </tr><tr class="row-观望">
+        </tr><tr class="row-观望" data-sector="能源化工">
           <td class="c-code">eg</td>
           <td class="c-name">甘醇主连</td>
           <td class="c-sec">能源化工</td>
@@ -690,7 +700,7 @@ td.c-reason { text-align:left; font-size:10px; color:#6b7280; max-width:160px; o
           <td class="c-stop">—</td>
           <td><span class="sig-badge" style="color:#6b7280;background:#f3f4f6">观望</span></td>
           <td class="c-reason">周线多，级别未共振</td>
-        </tr><tr class="row-观望">
+        </tr><tr class="row-观望" data-sector="能源化工">
           <td class="c-code">fu</td>
           <td class="c-name">燃油主连</td>
           <td class="c-sec">能源化工</td>
@@ -701,7 +711,7 @@ td.c-reason { text-align:left; font-size:10px; color:#6b7280; max-width:160px; o
           <td class="c-stop">—</td>
           <td><span class="sig-badge" style="color:#6b7280;background:#f3f4f6">观望</span></td>
           <td class="c-reason">周线多，级别未共振</td>
-        </tr><tr class="row-观望">
+        </tr><tr class="row-观望" data-sector="农产品">
           <td class="c-code">jd</td>
           <td class="c-name">鸡蛋主连</td>
           <td class="c-sec">农产品</td>
@@ -712,7 +722,7 @@ td.c-reason { text-align:left; font-size:10px; color:#6b7280; max-width:160px; o
           <td class="c-stop">—</td>
           <td><span class="sig-badge" style="color:#6b7280;background:#f3f4f6">观望</span></td>
           <td class="c-reason">周线多，级别未共振</td>
-        </tr><tr class="row-观望">
+        </tr><tr class="row-观望" data-sector="黑色建材">
           <td class="c-code">jm</td>
           <td class="c-name">焦煤主连</td>
           <td class="c-sec">黑色建材</td>
@@ -723,7 +733,7 @@ td.c-reason { text-align:left; font-size:10px; color:#6b7280; max-width:160px; o
           <td class="c-stop">—</td>
           <td><span class="sig-badge" style="color:#6b7280;background:#f3f4f6">观望</span></td>
           <td class="c-reason">周线多，级别未共振</td>
-        </tr><tr class="row-观望">
+        </tr><tr class="row-观望" data-sector="能源化工">
           <td class="c-code">l</td>
           <td class="c-name">塑料主连</td>
           <td class="c-sec">能源化工</td>
@@ -734,7 +744,7 @@ td.c-reason { text-align:left; font-size:10px; color:#6b7280; max-width:160px; o
           <td class="c-stop">—</td>
           <td><span class="sig-badge" style="color:#6b7280;background:#f3f4f6">观望</span></td>
           <td class="c-reason">周线多，级别未共振</td>
-        </tr><tr class="row-观望">
+        </tr><tr class="row-观望" data-sector="金属">
           <td class="c-code">lc</td>
           <td class="c-name">碳酸锂主连</td>
           <td class="c-sec">金属</td>
@@ -745,18 +755,18 @@ td.c-reason { text-align:left; font-size:10px; color:#6b7280; max-width:160px; o
           <td class="c-stop">—</td>
           <td><span class="sig-badge" style="color:#6b7280;background:#f3f4f6">观望</span></td>
           <td class="c-reason">周线多，级别未共振</td>
-        </tr><tr class="row-观望">
+        </tr><tr class="row-观望" data-sector="农产品">
           <td class="c-code">lh</td>
           <td class="c-name">生猪主连</td>
           <td class="c-sec">农产品</td>
           <td>⚪平</td>
-          <td>—</td>
-          <td style="color:#16a34a;font-weight:600">45.9</td>
+          <td>✅金叉</td>
+          <td style="color:#16a34a;font-weight:600">43.8</td>
           <td class="c-entry">—</td>
           <td class="c-stop">—</td>
           <td><span class="sig-badge" style="color:#6b7280;background:#f3f4f6">观望</span></td>
           <td class="c-reason">周线平，级别未共振</td>
-        </tr><tr class="row-观望">
+        </tr><tr class="row-观望" data-sector="能源化工">
           <td class="c-code">lu</td>
           <td class="c-name">低硫燃料油主连</td>
           <td class="c-sec">能源化工</td>
@@ -767,7 +777,7 @@ td.c-reason { text-align:left; font-size:10px; color:#6b7280; max-width:160px; o
           <td class="c-stop">—</td>
           <td><span class="sig-badge" style="color:#6b7280;background:#f3f4f6">观望</span></td>
           <td class="c-reason">周线多，级别未共振</td>
-        </tr><tr class="row-观望">
+        </tr><tr class="row-观望" data-sector="农产品">
           <td class="c-code">m</td>
           <td class="c-name">豆粕主连</td>
           <td class="c-sec">农产品</td>
@@ -778,7 +788,7 @@ td.c-reason { text-align:left; font-size:10px; color:#6b7280; max-width:160px; o
           <td class="c-stop">—</td>
           <td><span class="sig-badge" style="color:#6b7280;background:#f3f4f6">观望</span></td>
           <td class="c-reason">周线多，级别未共振</td>
-        </tr><tr class="row-观望">
+        </tr><tr class="row-观望" data-sector="农产品">
           <td class="c-code">p</td>
           <td class="c-name">棕榈主连</td>
           <td class="c-sec">农产品</td>
@@ -789,7 +799,7 @@ td.c-reason { text-align:left; font-size:10px; color:#6b7280; max-width:160px; o
           <td class="c-stop">—</td>
           <td><span class="sig-badge" style="color:#6b7280;background:#f3f4f6">观望</span></td>
           <td class="c-reason">周线多，级别未共振</td>
-        </tr><tr class="row-观望">
+        </tr><tr class="row-观望" data-sector="金属">
           <td class="c-code">pb</td>
           <td class="c-name">沪铅主连</td>
           <td class="c-sec">金属</td>
@@ -800,7 +810,7 @@ td.c-reason { text-align:left; font-size:10px; color:#6b7280; max-width:160px; o
           <td class="c-stop">—</td>
           <td><span class="sig-badge" style="color:#6b7280;background:#f3f4f6">观望</span></td>
           <td class="c-reason">周线空，级别未共振</td>
-        </tr><tr class="row-观望">
+        </tr><tr class="row-观望" data-sector="能源化工">
           <td class="c-code">pg</td>
           <td class="c-name">LPG主连</td>
           <td class="c-sec">能源化工</td>
@@ -811,7 +821,7 @@ td.c-reason { text-align:left; font-size:10px; color:#6b7280; max-width:160px; o
           <td class="c-stop">—</td>
           <td><span class="sig-badge" style="color:#6b7280;background:#f3f4f6">观望</span></td>
           <td class="c-reason">周线多，级别未共振</td>
-        </tr><tr class="row-观望">
+        </tr><tr class="row-观望" data-sector="能源化工">
           <td class="c-code">pp</td>
           <td class="c-name">PP主连</td>
           <td class="c-sec">能源化工</td>
@@ -822,7 +832,7 @@ td.c-reason { text-align:left; font-size:10px; color:#6b7280; max-width:160px; o
           <td class="c-stop">—</td>
           <td><span class="sig-badge" style="color:#6b7280;background:#f3f4f6">观望</span></td>
           <td class="c-reason">周线多，级别未共振</td>
-        </tr><tr class="row-观望">
+        </tr><tr class="row-观望" data-sector="金属">
           <td class="c-code">ps</td>
           <td class="c-name">多晶硅主连</td>
           <td class="c-sec">金属</td>
@@ -833,7 +843,7 @@ td.c-reason { text-align:left; font-size:10px; color:#6b7280; max-width:160px; o
           <td class="c-stop">—</td>
           <td><span class="sig-badge" style="color:#6b7280;background:#f3f4f6">观望</span></td>
           <td class="c-reason">周线空，级别未共振</td>
-        </tr><tr class="row-观望">
+        </tr><tr class="row-观望" data-sector="金属">
           <td class="c-code">si</td>
           <td class="c-name">工业硅主连</td>
           <td class="c-sec">金属</td>
@@ -844,7 +854,7 @@ td.c-reason { text-align:left; font-size:10px; color:#6b7280; max-width:160px; o
           <td class="c-stop">—</td>
           <td><span class="sig-badge" style="color:#6b7280;background:#f3f4f6">观望</span></td>
           <td class="c-reason">周线空，级别未共振</td>
-        </tr><tr class="row-观望">
+        </tr><tr class="row-观望" data-sector="黑色建材">
           <td class="c-code">ss</td>
           <td class="c-name">不锈钢主连</td>
           <td class="c-sec">黑色建材</td>
@@ -855,13 +865,13 @@ td.c-reason { text-align:left; font-size:10px; color:#6b7280; max-width:160px; o
           <td class="c-stop">—</td>
           <td><span class="sig-badge" style="color:#6b7280;background:#f3f4f6">观望</span></td>
           <td class="c-reason">周线多，级别未共振</td>
-        </tr><tr class="row-观望">
+        </tr><tr class="row-观望" data-sector="农产品">
           <td class="c-code">y</td>
           <td class="c-name">豆油主连</td>
           <td class="c-sec">农产品</td>
           <td>🟢多</td>
           <td>—</td>
-          <td style="color:#9ca3af;font-weight:600">14.7</td>
+          <td style="color:#9ca3af;font-weight:600">16.4</td>
           <td class="c-entry">—</td>
           <td class="c-stop">—</td>
           <td><span class="sig-badge" style="color:#6b7280;background:#f3f4f6">观望</span></td>
@@ -874,8 +884,20 @@ td.c-reason { text-align:left; font-size:10px; color:#6b7280; max-width:160px; o
 
 <div class="footer">
   <div>策略参数: 周线EMA60定方向 ｜ 2h EMA26/60+ADX(14)&gt;20入场 ｜ ATR(14)×2.5止损</div>
-  <div>数据源: TQSdk 主连加权价 ｜ 30个精选品种</div>
-  <div style="margin-top:4px">⚠️ 仅供研究参考，不构成投资建议。生成于 2026-08-09 12:54:53</div>
+  <div>数据源: TQSdk 主连加权价 ｜ 78个品种(持仓量&gt;1万)</div>
+  <div style="margin-top:4px">⚠️ 仅供研究参考，不构成投资建议。生成于 2026-08-09 15:45:17</div>
 </div>
+<script>
+document.querySelectorAll('.sector-btn').forEach(function(btn){
+  btn.addEventListener('click',function(){
+    document.querySelectorAll('.sector-btn').forEach(function(b){b.classList.remove('active');});
+    this.classList.add('active');
+    var s=this.dataset.sector;
+    document.querySelectorAll('tbody tr[data-sector]').forEach(function(tr){
+      tr.style.display=(s==='all'||tr.dataset.sector===s)?'':'none';
+    });
+  });
+});
+</script>
 </body>
 </html>
