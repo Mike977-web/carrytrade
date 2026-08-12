@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>板块动量 - 期货策略平台</title>
+<style>
+* { box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
+body { font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+  background:#0f172a; color:#e2e8f0; font-size:13px; padding-bottom:40px; }
+.topnav { background:#020617; padding:7px 14px; display:flex; align-items:center; gap:8px; position:sticky; top:0; z-index:10; }
+.topnav a { color:#93c5fd; font-size:12px; text-decoration:none; font-weight:600; }
+.topnav .sep { color:#475569; }
+.topnav .here { color:#cbd5e1; font-size:12px; }
+.header { background:linear-gradient(135deg,#0f172a,#7c2d12); color:#fff; padding:16px 14px; }
+.header h1 { font-size:17px; font-weight:700; }
+.header .sub { font-size:11px; color:#fed7aa; margin-top:5px; line-height:1.6; }
+.header .time { font-size:11px; color:#64748b; margin-top:6px; }
+.summary { display:flex; flex-wrap:wrap; gap:8px; padding:12px 14px; background:#1e293b; border-bottom:1px solid #334155; }
+.s-item { flex:1; min-width:64px; text-align:center; padding:5px 3px; border-radius:8px; background:#0f172a; }
+.s-num { font-size:20px; font-weight:700; display:block; }
+.s-lab { font-size:10px; color:#94a3b8; }
+.s-red .s-num{color:#ef4444} .s-green .s-num{color:#22c55e} .s-orange .s-num{color:#f97316} .s-teal .s-num{color:#10b981}
+.sector-bar { display:flex; gap:6px; padding:10px 14px 0; flex-wrap:wrap; align-items:center; background:#1e293b; }
+.sector-label { font-size:11px; color:#94a3b8; }
+.sector-btn { font-size:12px; padding:5px 12px; border-radius:16px; background:#334155; border:1px solid #475569; color:#cbd5e1; cursor:pointer; }
+.sector-btn.active { background:#ea580c; color:#fff; border-color:#ea580c; }
+.section { padding:14px; }
+.sec-group { margin-bottom:20px; display:none; }
+.sec-group.active { display:block; }
+.sec-title { font-size:14px; font-weight:700; color:#fbbf24; margin-bottom:10px; border-bottom:1px solid #334155; padding-bottom:6px; }
+.note { background:#1e293b; border:1px solid #334155; color:#94a3b8; font-size:11px; padding:8px 12px; border-radius:8px; margin-bottom:12px; line-height:1.6; }
+/* 热力图 */
+.heat-wrap { overflow-x:auto; margin-bottom:14px; }
+.heat { border-collapse:collapse; font-size:11px; min-width:480px; width:100%; }
+.heat th, .heat td { border:1px solid #1e293b; padding:0; text-align:center; }
+.heat th { background:#1e293b; color:#94a3b8; font-weight:600; padding:6px 3px; white-space:nowrap; }
+.heat td.lbl { background:#1e293b; color:#cbd5e1; font-weight:600; text-align:left; padding:6px 8px; white-space:nowrap; }
+.heat td.cell { height:30px; min-width:48px; font-weight:700; font-size:11px; }
+/* 信号表 */
+.sig-table { width:100%; border-collapse:collapse; font-size:12px; }
+.sig-table th { background:#1e293b; color:#94a3b8; padding:7px 4px; text-align:center; font-weight:600; font-size:11px; }
+.sig-table td { padding:6px 4px; border-bottom:1px solid #1e293b; text-align:center; }
+.sig-table td.name { text-align:left; color:#e2e8f0; font-weight:600; }
+.sig-table td.code { color:#93c5fd; font-weight:700; font-family:monospace; }
+.zcell { font-weight:700; }
+.spark { text-align:center; }
+.footer { text-align:center; font-size:11px; color:#475569; padding:16px 14px; }
+</style>
+</head>
+<body>
+<div class="topnav">
+  <a href="index.html">← 平台首页</a>
+  <span class="sep">/</span>
+  <span class="here">板块动量</span>
+</div>
+<div class="header">
+  <h1>🔥 板块动量快照</h1>
+  <div class="sub">ROC12变动率 · z-score标准化动量(÷60日σ×√12) · ER效率比率(趋势质量)<br>|z|≥2强信号 ｜ 1≤|z|<2偏多/偏空 ｜ ER高=单边趋势低=震荡</div>
+  <div class="time">数据更新: 2026-08-12 09:20:35</div>
+</div>
+
+<div class="summary">
+  <div class="s-item s-red"><span class="s-num">0</span><span class="s-lab">强多</span></div>
+  <div class="s-item s-orange"><span class="s-num">5</span><span class="s-lab">偏多</span></div>
+  <div class="s-item s-teal"><span class="s-num">0</span><span class="s-lab">偏空</span></div>
+  <div class="s-item s-green"><span class="s-num">0</span><span class="s-lab">强空</span></div>
+  <div class="s-item"><span class="s-num" style="color:#fbbf24">41</span><span class="s-lab">监控品种</span></div>
+</div>
+
+<div class="sector-bar">
+  <span class="sector-label">板块:</span>
+  <div class="sector-btn active" data-sec="all">全部</div>
+  <div class="sector-btn" data-sec="农产品">农产品</div><div class="sector-btn" data-sec="黑色">黑色</div><div class="sector-btn" data-sec="有色">有色</div><div class="sector-btn" data-sec="能化">能化</div>
+</div>
+
+<div class="section" id="content"></div>
+
+<div class="footer">
+  <div>指标: ROC12=12日变动率 ｜ z-score=ROC12÷(60日σ×√12) ｜ ER=|净变化|÷路径</div>
+  <div>数据源: TQSdk 主力加权连续合约日线 ｜ 4板块41品种</div>
+  <div style="margin-top:4px">⚠️ 仅供研究参考，不构成投资建议。生成于 2026-08-12 09:20:35</div>
+</div>
+
+<script>
+var DATA = {"gen_time": "2026-08-12 09:20:35", "instruments": [{"code": "a", "name": "豆一", "sector": "农产品", "result": {"roc12": 2.9, "zscore": 1.1, "er": 0.38, "signal": "偏多", "signal_color": "#e67e22", "m20": 4.2, "m60": 2.3, "multi": {"5": 3.9, "10": 3.9, "20": 4.2, "60": 2.3, "120": 8.9, "200": 21.6}, "z_hist": [-0.63, -0.85, -0.33, -0.32, -0.44, -0.16, -0.25, -0.03, 0.43, 0.35, -0.39, 0.02, -0.28, 0.02, 0.14, 0.21, 0.14, 0.61, 1.06, 0.83, 1.09, 1.1], "last_close": 4899.0}, "has_data": true}, {"code": "p", "name": "棕榈油", "sector": "农产品", "result": {"roc12": 3.3, "zscore": 0.86, "er": 0.39, "signal": "中性", "signal_color": "#7f8c8d", "m20": 4.4, "m60": 0.2, "multi": {"5": 3.2, "10": 3.3, "20": 4.4, "60": 0.2, "120": 8.4, "200": 4.1}, "z_hist": [0.11, -0.3, -0.09, -0.11, 0.72, 0.44, 0.02, 0.51, 0.67, 0.07, 0.26, 0.49, 0.12, 0.01, 0.03, 0.19, 0.02, 0.42, 0.31, -0.3, -0.36, 0.86], "last_close": 9691.0}, "has_data": true}, {"code": "m", "name": "豆粕", "sector": "农产品", "result": {"roc12": -1.3, "zscore": -0.5, "er": 0.18, "signal": "中性", "signal_color": "#7f8c8d", "m20": 1.8, "m60": 2.8, "multi": {"5": 1.7, "10": 0.4, "20": 1.8, "60": 2.8, "120": 14.2, "200": 8.9}, "z_hist": [1.05, 1.38, 1.79, 1.37, 2.01, 2.55, 1.65, 1.76, 2.27, 1.38, 0.6, 0.69, 0.29, 0.06, 0.0, 0.21, -0.67, -0.67, -0.49, -0.89, -0.96, -0.5], "last_close": 3122.0}, "has_data": true}, {"code": "RM", "name": "菜粕", "sector": "农产品", "result": {"roc12": -4.2, "zscore": -0.99, "er": 0.5, "signal": "中性", "signal_color": "#7f8c8d", "m20": -1.2, "m60": -3.6, "multi": {"5": -1.1, "10": -2.1, "20": -1.2, "60": -3.6, "120": 1.9, "200": -0.8}, "z_hist": [0.04, 0.23, 0.76, 0.22, 0.7, 1.07, 0.57, 0.52, 1.75, 0.49, 0.1, 0.42, -0.19, 0.01, 0.11, 0.22, -0.2, -0.34, -0.29, -0.55, -1.51, -0.99], "last_close": 2287.0}, "has_data": true}, {"code": "y", "name": "豆油", "sector": "农产品", "result": {"roc12": -0.4, "zscore": -0.21, "er": 0.16, "signal": "中性", "signal_color": "#7f8c8d", "m20": -1.9, "m60": -1.8, "multi": {"5": 0.1, "10": 0.2, "20": -1.9, "60": -1.8, "120": 4.1, "200": 2.1}, "z_hist": [0.91, 0.7, 0.67, 0.57, 0.98, 0.76, -0.37, -0.22, 0.02, -0.68, -0.61, -0.77, -0.99, -1.05, -0.95, -0.49, -0.9, -0.52, 0.01, -0.53, -0.8, -0.21], "last_close": 8433.0}, "has_data": true}, {"code": "OI", "name": "菜油", "sector": "农产品", "result": {"roc12": 0.9, "zscore": 0.24, "er": 0.16, "signal": "中性", "signal_color": "#7f8c8d", "m20": 1.5, "m60": 3.0, "multi": {"5": 0.0, "10": 1.6, "20": 1.5, "60": 3.0, "120": 10.9, "200": 2.3}, "z_hist": [0.82, 0.54, 1.06, 1.0, 1.37, 1.12, 0.58, 0.85, 1.17, 0.22, -0.04, 0.12, -0.13, -0.11, -0.37, 0.37, 0.08, 0.28, 0.48, -0.15, -0.29, 0.24], "last_close": 10085.0}, "has_data": true}, {"code": "CF", "name": "棉花", "sector": "农产品", "result": {"roc12": 2.1, "zscore": 0.77, "er": 0.34, "signal": "中性", "signal_color": "#7f8c8d", "m20": 1.2, "m60": 0.6, "multi": {"5": 1.7, "10": 2.6, "20": 1.2, "60": 0.6, "120": 11.0, "200": 21.9}, "z_hist": [0.75, 0.01, -0.05, -0.88, -0.4, -0.65, -0.63, -0.65, -0.27, -0.01, -0.61, -0.5, -0.79, -0.7, -0.84, 0.2, 0.14, 0.4, 0.55, 0.59, 0.58, 0.77], "last_close": 16260.0}, "has_data": true}, {"code": "SR", "name": "白糖", "sector": "农产品", "result": {"roc12": 0.8, "zscore": 0.4, "er": 0.14, "signal": "中性", "signal_color": "#7f8c8d", "m20": -0.4, "m60": -4.1, "multi": {"5": 2.0, "10": 1.7, "20": -0.4, "60": -4.1, "120": -1.3, "200": -3.8}, "z_hist": [0.16, -0.43, -1.02, -1.52, -1.11, -1.39, -1.59, -1.26, -1.14, -0.81, -1.41, -1.35, -1.47, -1.76, -1.03, -0.39, -0.5, -0.48, -0.16, 0.17, 0.45, 0.4], "last_close": 5209.0}, "has_data": true}, {"code": "c", "name": "玉米", "sector": "农产品", "result": {"roc12": -0.4, "zscore": -0.24, "er": 0.11, "signal": "中性", "signal_color": "#7f8c8d", "m20": -2.0, "m60": -4.5, "multi": {"5": 0.3, "10": -0.4, "20": -2.0, "60": -4.5, "120": -1.2, "200": 6.7}, "z_hist": [-0.3, -0.75, -0.51, -1.01, -1.23, -0.74, -0.39, -0.61, -0.5, -0.7, -1.02, -0.9, -1.03, -0.82, -1.24, -1.06, -0.56, -0.79, -0.6, -0.29, -0.24, -0.24], "last_close": 2258.0}, "has_data": true}, {"code": "jd", "name": "鸡蛋", "sector": "农产品", "result": {"roc12": -6.1, "zscore": -0.71, "er": 0.27, "signal": "中性", "signal_color": "#7f8c8d", "m20": -13.4, "m60": 1.2, "multi": {"5": -5.9, "10": -6.2, "20": -13.4, "60": 1.2, "120": 31.8, "200": 36.8}, "z_hist": [0.87, 0.03, -0.31, -0.36, -0.92, -1.1, -1.52, -1.51, -1.8, -1.5, -1.65, -1.54, -1.5, -1.32, -0.86, -0.94, -0.34, -0.05, 0.1, -0.68, -0.59, -0.71], "last_close": 3837.0}, "has_data": true}, {"code": "lh", "name": "生猪", "sector": "农产品", "result": {"roc12": 8.1, "zscore": 0.92, "er": 0.42, "signal": "中性", "signal_color": "#7f8c8d", "m20": 1.0, "m60": 11.9, "multi": {"5": 1.4, "10": 10.5, "20": 1.0, "60": 11.9, "120": 5.3, "200": 3.5}, "z_hist": [0.12, -0.46, -0.39, -0.52, -0.8, -0.91, -1.09, -0.98, -1.21, -1.07, -1.49, -1.13, -1.32, -1.33, -1.29, -0.92, 0.43, 0.65, 0.76, 0.84, 1.09, 0.92], "last_close": 12080.0}, "has_data": true}, {"code": "AP", "name": "苹果", "sector": "农产品", "result": {"roc12": 0.4, "zscore": 0.12, "er": 0.1, "signal": "中性", "signal_color": "#7f8c8d", "m20": 3.1, "m60": 5.0, "multi": {"5": -0.2, "10": 0.8, "20": 3.1, "60": 5.0, "120": -18.3, "200": -10.0}, "z_hist": [-0.36, -0.44, -0.63, -0.69, -1.04, -0.57, -0.28, -0.1, 0.62, 0.29, -0.08, 0.45, 0.67, 1.0, 0.86, 1.03, 1.19, 0.85, 0.64, 0.22, -0.04, 0.12], "last_close": 7761.0}, "has_data": true}, {"code": "CJ", "name": "红枣", "sector": "农产品", "result": {"roc12": 4.1, "zscore": 0.76, "er": 0.24, "signal": "中性", "signal_color": "#7f8c8d", "m20": 1.7, "m60": -8.0, "multi": {"5": 8.5, "10": 5.6, "20": 1.7, "60": -8.0, "120": -3.9, "200": -27.1}, "z_hist": [-0.64, -1.1, -1.68, -1.61, -1.69, -1.77, -1.32, -0.81, -0.77, -0.56, -0.59, -0.49, -0.66, -0.69, -1.31, -0.81, -0.58, -0.18, -0.05, 0.04, 1.07, 0.76], "last_close": 8330.0}, "has_data": true}, {"code": "PK", "name": "花生", "sector": "农产品", "result": {"roc12": -1.1, "zscore": -0.63, "er": 0.36, "signal": "中性", "signal_color": "#7f8c8d", "m20": -1.1, "m60": -0.1, "multi": {"5": 0.0, "10": -0.6, "20": -1.1, "60": -0.1, "120": 1.9, "200": 3.4}, "z_hist": [-0.2, -1.12, -1.9, -2.42, -2.15, -1.53, -1.74, -0.91, -0.94, -0.49, -1.11, -0.9, -0.99, -0.65, -0.63, -0.29, 0.14, -0.42, -0.14, -0.14, -0.18, -0.63], "last_close": 8194.0}, "has_data": true}, {"code": "jm", "name": "焦煤", "sector": "黑色", "result": {"roc12": 5.2, "zscore": 0.63, "er": 0.24, "signal": "中性", "signal_color": "#7f8c8d", "m20": 4.9, "m60": 9.4, "multi": {"5": 8.4, "10": 7.1, "20": 4.9, "60": 9.4, "120": 19.4, "200": 13.3}, "z_hist": [0.09, -0.21, -0.19, -0.02, 0.04, -0.07, -0.17, 0.14, -0.08, -0.19, -0.15, 0.09, -0.33, -0.89, -0.78, -0.63, -0.39, -0.4, 0.01, -0.14, 0.56, 0.63], "last_close": 1336.0}, "has_data": true}, {"code": "j", "name": "焦炭", "sector": "黑色", "result": {"roc12": 2.9, "zscore": 0.44, "er": 0.18, "signal": "中性", "signal_color": "#7f8c8d", "m20": 1.5, "m60": 7.1, "multi": {"5": 6.4, "10": 3.4, "20": 1.5, "60": 7.1, "120": 14.6, "200": 13.8}, "z_hist": [-0.56, -0.73, -0.67, -0.33, -0.48, -0.74, -0.96, -0.68, -0.87, -0.7, -0.68, -0.16, -0.37, -0.87, -0.87, -0.82, -0.38, -0.04, 0.36, 0.14, 0.56, 0.44], "last_close": 1908.0}, "has_data": true}, {"code": "i", "name": "铁矿石", "sector": "黑色", "result": {"roc12": -2.3, "zscore": -0.63, "er": 0.21, "signal": "中性", "signal_color": "#7f8c8d", "m20": -5.0, "m60": -9.3, "multi": {"5": 2.5, "10": -2.0, "20": -5.0, "60": -9.3, "120": -4.9, "200": -6.1}, "z_hist": [0.48, 0.65, 0.51, 1.21, 0.74, 0.62, 0.06, 0.48, 0.0, -0.18, -0.42, -0.22, -1.76, -1.77, -2.27, -2.33, -1.94, -1.11, -0.86, -1.26, -0.9, -0.63], "last_close": 724.0}, "has_data": true}, {"code": "rb", "name": "螺纹钢", "sector": "黑色", "result": {"roc12": -2.0, "zscore": -0.97, "er": 0.35, "signal": "中性", "signal_color": "#7f8c8d", "m20": -3.2, "m60": -5.9, "multi": {"5": 0.8, "10": -1.5, "20": -3.2, "60": -5.9, "120": -1.2, "200": -0.7}, "z_hist": [-0.04, 0.29, 0.39, 0.68, 0.43, 0.5, 0.16, 0.26, -0.3, -0.19, -0.4, 0.12, -1.16, -1.69, -2.09, -1.97, -1.64, -1.23, -1.14, -1.35, -0.92, -0.97], "last_close": 3015.0}, "has_data": true}, {"code": "hc", "name": "热卷", "sector": "黑色", "result": {"roc12": -1.4, "zscore": -0.73, "er": 0.26, "signal": "中性", "signal_color": "#7f8c8d", "m20": -2.3, "m60": -5.2, "multi": {"5": 1.3, "10": -1.1, "20": -2.3, "60": -5.2, "120": 0.9, "200": 1.4}, "z_hist": [-0.2, 0.11, 0.13, 0.49, 0.22, 0.27, -0.1, 0.12, -0.16, -0.06, -0.15, 0.21, -1.0, -1.7, -2.01, -1.89, -1.49, -0.97, -0.62, -0.91, -0.73, -0.73], "last_close": 3249.0}, "has_data": true}, {"code": "FG", "name": "玻璃", "sector": "黑色", "result": {"roc12": -1.4, "zscore": -0.34, "er": 0.13, "signal": "中性", "signal_color": "#7f8c8d", "m20": -6.5, "m60": -13.1, "multi": {"5": 0.2, "10": 0.3, "20": -6.5, "60": -13.1, "120": -17.1, "200": -19.0}, "z_hist": [-0.3, -0.69, -1.1, -1.43, -1.78, -1.59, -1.24, -1.23, -1.23, -1.35, -1.8, -1.65, -1.97, -1.81, -1.55, -0.39, -0.13, -0.34, -0.73, -0.27, -0.18, -0.34], "last_close": 887.0}, "has_data": true}, {"code": "SA", "name": "纯碱", "sector": "黑色", "result": {"roc12": -1.1, "zscore": -0.25, "er": 0.07, "signal": "中性", "signal_color": "#7f8c8d", "m20": -6.4, "m60": -17.5, "multi": {"5": 5.0, "10": 2.5, "20": -6.4, "60": -17.5, "120": -16.0, "200": -18.6}, "z_hist": [-0.73, -1.19, -1.2, -1.84, -2.14, -2.12, -1.98, -1.46, -1.77, -1.95, -2.56, -2.39, -2.89, -2.83, -2.95, -2.23, -1.76, -1.83, -1.88, -0.99, -0.18, -0.25], "last_close": 984.0}, "has_data": true}, {"code": "SF", "name": "硅铁", "sector": "黑色", "result": {"roc12": 0.6, "zscore": 0.15, "er": 0.04, "signal": "中性", "signal_color": "#7f8c8d", "m20": 2.3, "m60": 1.4, "multi": {"5": 0.9, "10": 0.2, "20": 2.3, "60": 1.4, "120": 6.3, "200": 9.2}, "z_hist": [1.06, 0.7, 0.62, 0.66, 0.32, 0.04, 0.27, 0.06, 0.28, 0.33, 0.09, 0.77, -0.18, -0.06, -0.59, 0.32, 0.42, 0.61, 0.25, 0.22, 0.06, 0.15], "last_close": 5930.0}, "has_data": true}, {"code": "SM", "name": "锰硅", "sector": "黑色", "result": {"roc12": 1.4, "zscore": 0.52, "er": 0.21, "signal": "中性", "signal_color": "#7f8c8d", "m20": -1.5, "m60": -1.9, "multi": {"5": 2.9, "10": 1.3, "20": -1.5, "60": -1.9, "120": -0.4, "200": 1.4}, "z_hist": [0.89, 0.77, 0.73, 0.44, 0.13, -0.27, -0.79, -1.34, -1.52, -1.23, -1.08, -0.87, -1.24, -1.23, -1.69, -1.19, -1.05, -0.7, -0.28, 0.26, 0.57, 0.52], "last_close": 5796.0}, "has_data": true}, {"code": "cu", "name": "沪铜", "sector": "有色", "result": {"roc12": 3.0, "zscore": 1.09, "er": 0.61, "signal": "偏多", "signal_color": "#e67e22", "m20": 3.8, "m60": 3.5, "multi": {"5": 0.8, "10": 3.1, "20": 3.8, "60": 3.5, "120": 6.5, "200": 28.2}, "z_hist": [0.88, 0.32, 0.35, 0.5, 0.57, 0.74, 0.85, 0.87, 0.56, 0.56, 0.32, 0.53, 0.09, 0.37, 0.51, 0.95, 1.12, 0.6, 0.85, 0.67, 1.12, 1.09], "last_close": 108180.0}, "has_data": true}, {"code": "al", "name": "沪铝", "sector": "有色", "result": {"roc12": 5.3, "zscore": 1.73, "er": 0.96, "signal": "偏多", "signal_color": "#e67e22", "m20": 5.3, "m60": -0.3, "multi": {"5": 2.6, "10": 4.1, "20": 5.3, "60": -0.3, "120": 3.8, "200": 16.8}, "z_hist": [0.38, 0.13, 0.91, 1.14, 0.85, 0.44, 0.42, 0.55, 0.2, 0.18, 0.22, 0.69, 0.43, 0.62, 0.56, 0.86, 1.08, 0.91, 1.19, 1.16, 1.45, 1.73], "last_close": 24415.0}, "has_data": true}, {"code": "zn", "name": "沪锌", "sector": "有色", "result": {"roc12": 3.1, "zscore": 1.0, "er": 0.32, "signal": "偏多", "signal_color": "#e67e22", "m20": 3.7, "m60": 4.2, "multi": {"5": 0.9, "10": 3.6, "20": 3.7, "60": 4.2, "120": 4.9, "200": 17.6}, "z_hist": [1.05, 0.35, 0.38, 0.04, 0.29, 0.27, 0.06, 0.2, 0.14, 0.11, -0.11, 0.08, -0.12, 0.18, 0.95, 0.84, 1.39, 1.44, 1.82, 0.91, 1.14, 1.0], "last_close": 25665.0}, "has_data": true}, {"code": "ni", "name": "沪镍", "sector": "有色", "result": {"roc12": -3.3, "zscore": -0.72, "er": 0.24, "signal": "中性", "signal_color": "#7f8c8d", "m20": 0.2, "m60": -11.4, "multi": {"5": -1.8, "10": -2.4, "20": 0.2, "60": -11.4, "120": -3.7, "200": 6.0}, "z_hist": [0.21, -0.22, 0.89, 0.5, 0.72, 0.49, 0.69, 0.98, 1.28, 0.76, 0.44, 0.62, 0.29, 0.62, -0.6, 0.61, 0.15, -0.53, -0.17, -0.55, -0.71, -0.72], "last_close": 128440.0}, "has_data": true}, {"code": "sn", "name": "沪锡", "sector": "有色", "result": {"roc12": 1.8, "zscore": 0.27, "er": 0.13, "signal": "中性", "signal_color": "#7f8c8d", "m20": 4.2, "m60": 4.7, "multi": {"5": -1.2, "10": 2.6, "20": 4.2, "60": 4.7, "120": 12.3, "200": 52.8}, "z_hist": [1.06, 0.64, 0.56, 0.49, 0.65, 0.55, 0.22, 0.31, 0.08, 0.16, -0.13, 0.27, -0.03, 0.49, 0.49, 0.9, 0.75, 0.42, 0.62, 0.33, 0.35, 0.27], "last_close": 428990.0}, "has_data": true}, {"code": "pb", "name": "沪铅", "sector": "有色", "result": {"roc12": 1.6, "zscore": 0.59, "er": 0.19, "signal": "中性", "signal_color": "#7f8c8d", "m20": 2.0, "m60": -3.6, "multi": {"5": 0.8, "10": 0.4, "20": 2.0, "60": -3.6, "120": -4.7, "200": -7.0}, "z_hist": [-1.16, -1.74, -0.76, 0.0, 0.12, 0.0, -0.44, 0.0, -0.84, -1.24, -0.97, -0.27, -0.33, -0.07, -0.74, -1.12, -0.13, -0.57, 0.01, -0.08, 0.43, 0.59], "last_close": 15880.0}, "has_data": true}, {"code": "ao", "name": "氧化铝", "sector": "有色", "result": {"roc12": 1.2, "zscore": 0.31, "er": 0.18, "signal": "中性", "signal_color": "#7f8c8d", "m20": 0.5, "m60": -0.2, "multi": {"5": 2.0, "10": 1.3, "20": 0.5, "60": -0.2, "120": -4.1, "200": -2.9}, "z_hist": [-0.84, -0.96, -0.81, -1.12, -0.21, 0.07, 0.01, 0.1, -0.06, -0.31, -0.3, 0.05, -0.44, -0.79, -0.53, -0.14, -0.42, -0.29, -0.21, -0.16, 0.14, 0.31], "last_close": 2719.0}, "has_data": true}, {"code": "bc", "name": "国际铜", "sector": "有色", "result": {"roc12": 3.1, "zscore": 1.02, "er": 0.54, "signal": "偏多", "signal_color": "#e67e22", "m20": 4.2, "m60": 4.1, "multi": {"5": 0.7, "10": 3.3, "20": 4.2, "60": 4.1, "120": 6.9, "200": 28.6}, "z_hist": [0.92, 0.41, 0.37, 0.52, 0.65, 0.86, 1.08, 1.08, 0.69, 0.61, 0.4, 0.61, 0.15, 0.44, 0.57, 1.03, 1.13, 0.57, 0.74, 0.48, 0.98, 1.02], "last_close": 96430.0}, "has_data": true}, {"code": "sc", "name": "原油", "sector": "能化", "result": {"roc12": 2.7, "zscore": 0.24, "er": 0.08, "signal": "中性", "signal_color": "#7f8c8d", "m20": 7.9, "m60": -18.3, "multi": {"5": 10.1, "10": 2.3, "20": 7.9, "60": -18.3, "120": 16.9, "200": 28.7}, "z_hist": [1.08, 1.15, 1.23, 1.37, 2.59, 1.99, 2.65, 2.81, 2.5, 1.31, 1.28, 1.26, 0.91, 0.54, 0.27, 0.49, -0.69, -0.26, -0.44, -0.66, -0.38, 0.24], "last_close": 556.6}, "has_data": true}, {"code": "TA", "name": "PTA", "sector": "能化", "result": {"roc12": 1.8, "zscore": 0.25, "er": 0.11, "signal": "中性", "signal_color": "#7f8c8d", "m20": -0.5, "m60": -10.7, "multi": {"5": 0.1, "10": 0.6, "20": -0.5, "60": -10.7, "120": 9.4, "200": 30.0}, "z_hist": [0.98, 0.46, 0.41, 0.58, 1.45, 0.92, 1.08, 1.02, 0.59, -0.04, 0.17, 0.19, 0.0, 0.07, 0.33, 0.53, -0.41, -0.18, -0.21, -0.65, -0.24, 0.25], "last_close": 5724.0}, "has_data": true}, {"code": "MA", "name": "甲醇", "sector": "能化", "result": {"roc12": -0.1, "zscore": -0.01, "er": 0.01, "signal": "中性", "signal_color": "#7f8c8d", "m20": -1.5, "m60": -12.0, "multi": {"5": 3.6, "10": -1.6, "20": -1.5, "60": -12.0, "120": 16.3, "200": 14.7}, "z_hist": [1.0, 1.02, 1.12, 1.6, 2.43, 1.71, 1.85, 1.8, 1.32, 0.59, 0.59, 0.63, 0.11, -0.14, -0.19, -0.21, -1.27, -0.98, -0.99, -1.02, -0.59, -0.01], "last_close": 2607.0}, "has_data": true}, {"code": "UR", "name": "尿素", "sector": "能化", "result": {"roc12": -3.4, "zscore": -0.7, "er": 0.27, "signal": "中性", "signal_color": "#7f8c8d", "m20": -0.9, "m60": -6.6, "multi": {"5": -1.8, "10": -2.6, "20": -0.9, "60": -6.6, "120": -4.9, "200": 5.9}, "z_hist": [0.12, -0.33, -0.52, -0.44, 0.08, -0.01, 0.04, 0.18, 0.22, 0.38, 0.07, 0.09, -0.13, 0.29, -0.35, -0.32, 0.1, -0.11, -0.17, -0.45, -0.68, -0.7], "last_close": 1697.0}, "has_data": true}, {"code": "eg", "name": "乙二醇", "sector": "能化", "result": {"roc12": 2.3, "zscore": 0.3, "er": 0.09, "signal": "中性", "signal_color": "#7f8c8d", "m20": 5.2, "m60": 2.7, "multi": {"5": 6.1, "10": -0.9, "20": 5.2, "60": 2.7, "120": 31.0, "200": 22.2}, "z_hist": [1.81, 1.88, 2.04, 2.46, 3.1, 2.49, 2.63, 2.7, 2.86, 2.12, 1.98, 1.77, 1.65, 1.06, 0.8, 0.66, -0.49, -0.19, 0.11, -0.22, -0.13, 0.3], "last_close": 4890.0}, "has_data": true}, {"code": "pp", "name": "聚丙烯", "sector": "能化", "result": {"roc12": 3.1, "zscore": 0.46, "er": 0.21, "signal": "中性", "signal_color": "#7f8c8d", "m20": 3.0, "m60": -6.8, "multi": {"5": 3.2, "10": 1.5, "20": 3.0, "60": -6.8, "120": 24.7, "200": 27.3}, "z_hist": [2.06, 1.61, 1.66, 1.92, 2.85, 2.07, 2.21, 2.04, 1.63, 0.85, 0.99, 1.03, 0.54, 0.4, 0.32, 0.48, -0.68, -0.43, -0.32, -0.53, -0.08, 0.46], "last_close": 8340.0}, "has_data": true}, {"code": "l", "name": "塑料", "sector": "能化", "result": {"roc12": 1.6, "zscore": 0.27, "er": 0.13, "signal": "中性", "signal_color": "#7f8c8d", "m20": 0.3, "m60": -3.5, "multi": {"5": 2.0, "10": 0.9, "20": 0.3, "60": -3.5, "120": 14.7, "200": 13.1}, "z_hist": [2.21, 2.05, 1.88, 2.1, 2.83, 2.28, 2.23, 2.28, 2.13, 0.98, 0.97, 0.9, 0.15, -0.01, -0.06, 0.24, -0.69, -0.36, -0.15, -0.7, -0.29, 0.27], "last_close": 7772.0}, "has_data": true}, {"code": "v", "name": "PVC", "sector": "能化", "result": {"roc12": -0.2, "zscore": -0.04, "er": 0.02, "signal": "中性", "signal_color": "#7f8c8d", "m20": -1.5, "m60": -10.3, "multi": {"5": 1.5, "10": 0.1, "20": -1.5, "60": -10.3, "120": -8.9, "200": -3.4}, "z_hist": [0.97, 1.05, 0.67, 0.23, 1.45, 0.55, 0.47, 0.73, 0.72, 0.1, -0.13, 0.14, -0.45, -0.48, -0.57, 0.13, -1.01, -0.24, -0.25, -0.51, -0.43, -0.04], "last_close": 4528.0}, "has_data": true}, {"code": "eb", "name": "苯乙烯", "sector": "能化", "result": {"roc12": -0.2, "zscore": -0.02, "er": 0.01, "signal": "中性", "signal_color": "#7f8c8d", "m20": -1.7, "m60": -10.5, "multi": {"5": 3.9, "10": -1.5, "20": -1.7, "60": -10.5, "120": 12.1, "200": 29.2}, "z_hist": [2.65, 2.48, 2.44, 2.75, 3.36, 2.52, 2.65, 2.52, 1.82, 0.93, 0.9, 0.75, 0.25, -0.2, -0.35, -0.23, -1.39, -0.92, -0.78, -0.98, -0.62, -0.02], "last_close": 8375.0}, "has_data": true}, {"code": "pg", "name": "液化气", "sector": "能化", "result": {"roc12": -0.9, "zscore": -0.08, "er": 0.05, "signal": "中性", "signal_color": "#7f8c8d", "m20": 4.8, "m60": -12.4, "multi": {"5": 4.9, "10": -0.8, "20": 4.8, "60": -12.4, "120": 27.4, "200": 28.3}, "z_hist": [1.62, 1.54, 1.71, 1.78, 2.88, 1.77, 2.12, 2.13, 2.07, 1.5, 1.26, 1.06, 0.74, 0.47, 0.32, 0.32, -1.05, -0.46, -0.56, -0.64, -0.57, -0.08], "last_close": 5415.0}, "has_data": true}], "sectors": ["农产品", "黑色", "有色", "能化"]};
+var SECTORS = ["\u519c\u4ea7\u54c1", "\u9ed1\u8272", "\u6709\u8272", "\u80fd\u5316"];
+var PERIODS = [5, 10, 20, 60, 120, 200];
+
+function hcol(v){
+  if(v===null||v===undefined) return "#1e293b";
+  var a=Math.min(Math.abs(v)/30,0.85);
+  if(v>=0) return "rgba(239,68,68,"+(0.12+a)+")";
+  return "rgba(34,197,94,"+(0.12+a)+")";
+}
+function zcol(z){
+  if(z===null||z===undefined) return "#64748b";
+  if(z>=2) return "#ef4444"; if(z>=1) return "#f97316";
+  if(z<=-2) return "#22c55e"; if(z<=-1) return "#10b981";
+  return "#64748b";
+}
+function spark(zh){
+  if(!zh||zh.length<2) return '<span style="color:#475569">—</span>';
+  var zmin=Math.min.apply(null,zh.concat([-2])), zmax=Math.max.apply(null,zh.concat([2])), span=zmax-zmin||1;
+  var n=zh.length, w=110, h=30, pts=[];
+  for(var i=0;i<n;i++){ var x=i*w/(n-1), y=h-(zh[i]-zmin)/span*h; pts.push(x.toFixed(1)+','+y.toFixed(1)); }
+  var col=zcol(zh[zh.length-1]), zy=h-(0-zmin)/span*h;
+  var c=""+(n-1)*w/(n-1).toFixed(1);
+  var lasty=(h-(zh[n-1]-zmin)/span*h).toFixed(1);
+  return '<svg width="'+w+'" height="'+h+'" viewBox="0 0 '+w+' '+h+'">'+
+    '<line x1="0" y1="'+zy.toFixed(1)+'" x2="'+w+'" y2="'+zy.toFixed(1)+'" stroke="#374151" stroke-width="0.5" stroke-dasharray="2,2"/>'+
+    '<polyline points="'+pts.join(' ')+'" fill="none" stroke="'+col+'" stroke-width="1.5"/>'+
+    '<circle cx="'+c+'" cy="'+lasty+'" r="2" fill="'+col+'"/></svg>';
+}
+
+function render(sec){
+  var content=document.getElementById('content');
+  var groups = (sec==='all') ? SECTORS : [sec];
+  var html='';
+  groups.forEach(function(s){
+    var insts=DATA.instruments.filter(function(x){return x.sector===s&&x.has_data;});
+    if(!insts.length) return;
+    // 热力图
+    var heat='<div class="heat-wrap"><table class="heat"><thead><tr><th>品种</th>';
+    PERIODS.forEach(function(p){ heat+='<th>'+p+'日</th>'; });
+    heat+='</tr></thead><tbody>';
+    insts.forEach(function(it){
+      var r=it.result;
+      heat+='<tr><td class="lbl">'+it.name+'</td>';
+      PERIODS.forEach(function(p){
+        var v=r.multi[p];
+        heat+='<td class="cell" style="background:'+hcol(v)+';color:'+(v!==null&&v!==undefined&&Math.abs(v)>15?'#fff':'#e2e8f0')+'">'+(v!==null&&v!==undefined?(v>=0?'+':'')+v:'—')+'</td>';
+      });
+      heat+='</tr>';
+    });
+    heat+='</tbody></table></div>';
+    // 信号表
+    var tbl='<table class="sig-table"><thead><tr><th>代码</th><th>品种</th><th>ROC12</th><th>z-score</th><th>ER</th><th>信号</th><th>20日/60日</th><th>z走势</th></tr></thead><tbody>';
+    insts.forEach(function(it){
+      var r=it.result;
+      tbl+='<tr>'+
+        '<td class="code">'+it.code+'</td>'+
+        '<td class="name">'+it.name+'</td>'+
+        '<td style="color:'+(r.roc12>=0?'#ef4444':'#22c55e')+';font-weight:700">'+(r.roc12>=0?'+':'')+r.roc12+'%</td>'+
+        '<td class="zcell" style="color:'+zcol(r.zscore)+'">'+(r.zscore>=0?'+':'')+r.zscore+'</td>'+
+        '<td>'+r.er+'</td>'+
+        '<td style="color:'+r.signal_color+';font-weight:700">'+r.signal+'</td>'+
+        '<td style="font-size:11px;color:#94a3b8">'+(r.m20>=0?'+':'')+r.m20+' / '+(r.m60>=0?'+':'')+r.m60+'</td>'+
+        '<td class="spark">'+spark(r.z_hist)+'</td>'+
+        '</tr>';
+    });
+    tbl+='</tbody></table>';
+    html+='<div class="sec-group active"><div class="sec-title">'+s+'板块 ('+insts.length+'品种)</div>'+
+      '<div class="note">热力图: 红=正动量(涨) 绿=负动量(跌)，颜色越深幅度越大。多周期共振(5~200日同色)趋势更可靠。</div>'+
+      heat+tbl+'</div>';
+  });
+  content.innerHTML=html;
+}
+
+// 板块切换
+document.querySelectorAll('.sector-btn').forEach(function(btn){
+  btn.addEventListener('click',function(){
+    document.querySelectorAll('.sector-btn').forEach(function(b){b.classList.remove('active');});
+    this.classList.add('active');
+    render(this.dataset.sec);
+  });
+});
+render('all');
+</script>
+</body>
+</html>
