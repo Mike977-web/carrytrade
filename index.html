@@ -48,7 +48,7 @@ body { font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Mi
 <div class="header">
   <h1>📊 期货策略监控平台</h1>
   <div class="sub">多策略综合监控 · 实时行情 · 微信可转发</div>
-  <div class="time">数据更新: 2026-08-09 11:49:31</div>
+  <div class="time">数据更新: 2026-08-13 14:35:12</div>
 </div>
 
 <div class="grid">
@@ -60,15 +60,15 @@ body { font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Mi
     <h2>🔄 Carry Trade 正套监控</h2>
     <div class="desc">持仓成本法跨月套利 · 全49品种 · 买卖盘口保守价差</div>
     <div class="metrics">
-      <div class="metric"><span class="num num-green" id="mArb">5</span><span class="lab">无风险机会</span></div>
-      <div class="metric"><span class="num num-yellow" id="mCost">21</span><span class="lab">成本内</span></div>
+      <div class="metric"><span class="num num-green" id="mArb">7</span><span class="lab">无风险机会</span></div>
+      <div class="metric"><span class="num num-yellow" id="mCost">25</span><span class="lab">成本内</span></div>
       <div class="metric"><span class="num num-blue" id="mInst">49</span><span class="lab">监控品种</span></div>
     </div>
     <div class="opp-list" id="oppList" style="display:none">
       <div class="oh">🏆 活跃无风险机会 Top5</div>
     </div>
     <div class="card-foot">
-      <span>更新: 2026-08-09 11:49:31</span>
+      <span>更新: 2026-08-13 14:35:12</span>
       <span class="enter">进入 →</span>
     </div>
   </div>
@@ -79,9 +79,9 @@ body { font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Mi
     <span class="card-tag tag-live">● 运行中</span>
     <h2>📈 量化策略 · EMA共振</h2>
     <div class="desc">周线EMA60定方向 · 2h EMA26/60+ADX入场 · ATR止损<br><a href="backtest.html" style="color:#fbbf24;font-size:11px">→ 策略回测排行榜</a></div>
-    <div class="metrics"><div class="metric"><span class="num num-green">0</span><span class="lab">多头共振</span></div><div class="metric"><span class="num" style="color:#f87171">0</span><span class="lab">空头共振</span></div><div class="metric"><span class="num num-blue">78</span><span class="lab">监控品种</span></div></div>
+    <div class="metrics"><div class="metric"><span class="num num-green">1</span><span class="lab">多头共振</span></div><div class="metric"><span class="num" style="color:#f87171">0</span><span class="lab">空头共振</span></div><div class="metric"><span class="num num-blue">78</span><span class="lab">监控品种</span></div></div>
     <div class="card-foot">
-      <span>更新: 2026-08-09 11:49:31</span>
+      <span>更新: 2026-08-13 14:35:12</span>
       <span class="enter">进入 →</span>
     </div>
   </div>
@@ -98,7 +98,7 @@ body { font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Mi
       <div class="metric"><span class="num" style="color:#f97316">6</span><span class="lab">板块</span></div>
     </div>
     <div class="card-foot">
-      <span>更新: 2026-08-09 11:49:31</span>
+      <span>更新: 2026-08-13 14:35:12</span>
       <span class="enter">进入 →</span>
     </div>
   </div>
@@ -135,11 +135,11 @@ body { font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Mi
 
 <div class="footer">
   <div>⚠️ 仅供研究参考，不构成投资建议</div>
-  <div style="margin-top:4px">数据源: TQSdk · 生成于 2026-08-09 11:49:31</div>
+  <div style="margin-top:4px">数据源: TQSdk · 生成于 2026-08-13 14:35:12</div>
 </div>
 
 <script>
-var TOP_OPPS = [{"code": "CF", "name": "棉花", "pair": "2609/2611", "excess": 136.78, "yield": 4.96}];
+var TOP_OPPS = [];
 var ol = document.getElementById('oppList');
 if(TOP_OPPS.length){
   ol.style.display='block';
