@@ -104,6 +104,16 @@ function scol(v, isRate){
   if(v>=0) return "rgba(239,68,68,"+(0.10+a)+")";
   return "rgba(34,197,94,"+(0.10+a)+")";
 }
+// 该月对是否跨越注销月(近月含,到远月不含): 近月仓单会被强制注销,无法持至远月交割
+function xcancel(nym, fym, cm){
+  if(!cm || !cm.length) return false;
+  var cy=+nym.slice(0,4), cmn=+nym.slice(4,6), fy=+fym.slice(0,4), fm=+fym.slice(4,6);
+  while(cy<fy || (cy==fy && cmn<fm)){
+    if(cm.indexOf(cmn)>=0) return true;
+    cmn++; if(cmn>12){cmn=1;cy++;}
+  }
+  return false;
+}
 function render(sec){
   var content=document.getElementById('content');
   var groups=(sec==='all')?SECTORS:[sec];
@@ -138,7 +148,10 @@ function render(sec){
         if(j<ps.length){
           var v = (MODE==='rate')? ps[j].rate : ps[j].spread;
           var t = ps[j].near_ym.slice(2)+'-'+ps[j].far_ym.slice(2);
-          heat+='<td class="cell" title="'+t+'" style="background:'+scol(v,MODE==='rate')+';color:'+(v!==null&&Math.abs(v)>(MODE==='rate'?1.2:100)?'#fff':'#e2e8f0')+'">'+(v!==null?(v>=0?'+':'')+v:'—')+'</td>';
+          var xc = xcancel(ps[j].near_ym, ps[j].far_ym, r.cancel_months);
+          if(xc) t += ' ⚠跨注销月(近月仓单无法持至远月交割)';
+          var bd = xc? 'border:2px dashed #f97316;' : '';
+          heat+='<td class="cell" title="'+t+'" style="'+bd+'background:'+scol(v,MODE==='rate')+';color:'+(v!==null&&Math.abs(v)>(MODE==='rate'?1.2:100)?'#fff':'#e2e8f0')+'">'+(v!==null?(v>=0?'+':'')+v:'—')+'</td>';
         } else heat+='<td class="cell" style="background:#0f172a;color:#334155">·</td>';
       }
       heat+='</tr>';
@@ -150,14 +163,18 @@ function render(sec){
       var r=it.result;
       var dc = r.daily_change, dcc = dc===null?'#64748b':(dc>0?'#ef4444':'#22c55e');
       var cm = (r.cancel_months&&r.cancel_months.length)? r.cancel_months.join('/') : '—';
+      var cmt = (r.cancel_months&&r.cancel_months.length)? '仓单强制注销月:'+r.cancel_months.join('/')+'月。跨这些月的月对,近月仓单会被强制注销,无法持至远月交割(正套受限)' : '无注销约束或数据暂缺';
+      // 前对是否跨注销月
+      var fps = r.pairs[0];
+      var fxc = fps? xcancel(fps.near_ym, fps.far_ym, r.cancel_months) : false;
       var nameDisp = it.name + (r.odd_only? '<span style="color:#f97316;font-size:10px">(仅奇数月)</span>' : '');
       tbl+='<tr>'+
         '<td class="c">'+it.code+'</td>'+
         '<td class="n">'+nameDisp+'</td>'+
-        '<td style="color:#fbbf24;font-size:11px" title="仓单强制注销月">'+cm+'</td>'+
+        '<td style="color:#fbbf24;font-size:11px" title="'+cmt+'">'+cm+'</td>'+
         '<td class="sig" style="color:'+r.structure_color+'" title="'+r.structure_desc+'">'+r.structure+'</td>'+
         '<td>'+(r.avg_rate!==null?(r.avg_rate>=0?'+':'')+r.avg_rate:'—')+'</td>'+
-        '<td>'+r.front_pair+(r.odd_only?'<span style="color:#f97316;font-size:10px">×2月</span>':'')+'</td>'+
+        '<td>'+r.front_pair+(r.odd_only?'<span style="color:#f97316;font-size:10px">×2月</span>':'')+(fxc?'<span style="color:#f97316;font-size:10px" title="前对跨注销月,正套交割受限">⚠跨注</span>':'')+'</td>'+
         '<td style="color:'+(r.front_spread>=0?'#ef4444':'#22c55e')+';font-weight:700">'+(r.front_spread>=0?'+':'')+r.front_spread+'</td>'+
         '<td>'+(r.front_rate!==null?(r.front_rate>=0?'+':'')+r.front_rate:'—')+'</td>'+
         '<td>'+(r.pctile!==null?r.pctile:'—')+'</td>'+
@@ -166,7 +183,7 @@ function render(sec){
     });
     tbl+='</tbody></table></div>';
     html+='<div class="sec-group active"><div class="sec-title">'+s+'板块 ('+insts.length+'品种)</div>'+
-      '<div class="note">热力图: 红=近强(Back) 绿=远强(Contango)，颜色越深幅度越大。悬停看具体月份对。品种后[金色]=仓单强制注销月，(奇)=仅挂奇数月(月对跨2月)。配对口径: 跨一个月；仅奇数月品种用相邻挂牌对。</div>'+
+      '<div class="note">热力图: 红=近强(Back) 绿=远强(Contango)，颜色越深幅度越大。<span style="color:#f97316">橙虚线框</span>=该月对跨越注销月(近月仓单会被强制注销,无法持至远月交割,正套受限)。品种后[金色]=注销月，(奇)=仅挂奇数月(月对跨2月)。配对口径: 跨一个月；仅奇数月品种用相邻挂牌对。</div>'+
       heat+tbl+'</div>';
   });
   content.innerHTML=html;
