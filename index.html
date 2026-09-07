@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>期货策略监控平台</title>
+<style>
+* { box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
+body { font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+  background:#0f172a; color:#e2e8f0; min-height:100vh; padding-bottom:40px; }
+.header { background:linear-gradient(135deg,#0f172a,#1e3a8a); padding:24px 18px 20px; text-align:center;
+  border-bottom:1px solid #1e40af; }
+.header h1 { font-size:22px; font-weight:700; letter-spacing:1px; }
+.header .sub { font-size:13px; color:#93c5fd; margin-top:6px; }
+.header .time { font-size:11px; color:#64748b; margin-top:8px; }
+.refresh-bar { margin-top:10px; display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+#refreshBtn { padding:8px 16px; font-size:13px; font-weight:700; border:none; border-radius:8px;
+  background:linear-gradient(135deg,#2563eb,#16a34a); color:#fff; cursor:pointer; }
+#refreshBtn:disabled { background:#475569; cursor:not-allowed; }
+.svc-dot { width:9px; height:9px; border-radius:50%; background:#64748b; display:inline-block; }
+#svcTxt { font-size:11px; color:#94a3b8; }
+#refreshMsg { font-size:11px; color:#fbbf24; flex-basis:100%; display:none; }
+.grid { display:grid; grid-template-columns:1fr; gap:14px; padding:16px; max-width:600px; margin:0 auto; }
+@media(min-width:560px){ .grid { grid-template-columns:1fr 1fr; } }
+.card { background:#1e293b; border-radius:14px; padding:18px 16px; border:1px solid #334155;
+  position:relative; overflow:hidden; transition:border-color .2s,transform .1s; }
+.card:active { transform:scale(.98); }
+.card-link { position:absolute; inset:0; z-index:1; }
+.card.enabled { border-color:#1e40af; cursor:pointer; }
+.card.enabled:hover { border-color:#3b82f6; }
+.card.disabled { opacity:.6; }
+.card-tag { font-size:10px; padding:2px 8px; border-radius:10px; display:inline-block; margin-bottom:10px; font-weight:600; }
+.tag-live { background:#dcfce7; color:#166534; }
+.tag-dev { background:#475569; color:#cbd5e1; }
+.card h2 { font-size:17px; font-weight:700; margin-bottom:4px; }
+.card .desc { font-size:12px; color:#94a3b8; line-height:1.5; margin-bottom:14px; }
+.metrics { display:flex; gap:16px; margin-bottom:12px; flex-wrap:wrap; }
+.metric { }
+.metric .num { font-size:26px; font-weight:800; display:block; line-height:1; }
+.metric .lab { font-size:11px; color:#64748b; margin-top:3px; display:block; }
+.num-green { color:#4ade80; } .num-yellow { color:#facc15; } .num-blue { color:#60a5fa; }
+.card-foot { font-size:11px; color:#475569; display:flex; justify-content:space-between; align-items:center;
+  position:relative; z-index:2; }
+.enter { color:#60a5fa; font-weight:600; }
+.opp-list { margin-top:10px; background:#0f172a; border-radius:8px; padding:8px 10px; position:relative; z-index:2; }
+.opp-list .oh { font-size:11px; color:#64748b; margin-bottom:4px; }
+.opp-row { display:flex; align-items:center; gap:6px; font-size:12px; padding:3px 0; }
+.opp-code { font-weight:700; color:#93c5fd; min-width:34px; }
+.opp-pair { color:#94a3b8; flex:1; }
+.opp-yield { color:#4ade80; font-weight:600; }
+.footer { text-align:center; font-size:11px; color:#475569; padding:16px; }
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>📊 期货策略监控平台</h1>
+  <div class="sub">多策略综合监控 · 实时行情 · 微信可转发</div>
+  <div class="time">数据更新: 2026-09-03 11:34:38</div>
+  <div class="refresh-bar">
+    <button id="refreshBtn" onclick="doRefresh()">🔄 刷新数据</button>
+    <span class="svc-dot" id="svcDot"></span><span id="svcTxt">检查本机服务…</span>
+    <span id="refreshMsg"></span>
+  </div>
+</div>
+
+<div class="grid">
+
+  <!-- Carry Trade 正套监控 -->
+  <div class="card enabled">
+    <a class="card-link" href="carrytrade.html"></a>
+    <span class="card-tag tag-live">● 运行中</span>
+    <h2>🔄 Carry Trade 正套监控</h2>
+    <div class="desc">持仓成本法跨月套利 · 全49品种 · 买卖盘口保守价差</div>
+    <div class="metrics">
+      <div class="metric"><span class="num num-green" id="mArb">3</span><span class="lab">无风险机会</span></div>
+      <div class="metric"><span class="num num-yellow" id="mCost">21</span><span class="lab">成本内</span></div>
+      <div class="metric"><span class="num num-blue" id="mInst">49</span><span class="lab">监控品种</span></div>
+    </div>
+    <div class="opp-list" id="oppList" style="display:none">
+      <div class="oh">🏆 活跃无风险机会 Top5</div>
+    </div>
+    <div class="card-foot">
+      <span>更新: 2026-09-03 11:34:38</span>
+      <span class="enter">进入 →</span>
+    </div>
+  </div>
+
+  <!-- 量化策略 -->
+  <div class="card enabled">
+    <a class="card-link" href="quant.html" style="pointer-events:auto"></a>
+    <span class="card-tag tag-live">● 运行中</span>
+    <h2>📈 量化策略 · EMA共振</h2>
+    <div class="desc">周线EMA60定方向 · 2h EMA26/60+ADX入场 · ATR止损<br><a href="backtest.html" style="color:#fbbf24;font-size:11px">→ 策略回测排行榜</a></div>
+    <div class="metrics"><div class="metric"><span class="num num-green">0</span><span class="lab">多头共振</span></div><div class="metric"><span class="num" style="color:#f87171">0</span><span class="lab">空头共振</span></div><div class="metric"><span class="num num-blue">77</span><span class="lab">监控品种</span></div></div>
+    <div class="card-foot">
+      <span>更新: 2026-09-03 11:34:38</span>
+      <span class="enter">进入 →</span>
+    </div>
+  </div>
+
+  <!-- 板块动量 -->
+  <div class="card enabled">
+    <a class="card-link" href="momentum.html"></a>
+    <span class="card-tag tag-live">● 运行中</span>
+    <h2>🔥 板块动量快照</h2>
+    <div class="desc">ROC12变动率 · z-score标准化动量 · ER效率比率<br>6板块48品种 · 多周期热力图+z走势</div>
+    <div class="metrics">
+      <div class="metric"><span class="num" style="color:#fbbf24">48</span><span class="lab">监控品种</span></div>
+      <div class="metric"><span class="num" style="color:#60a5fa">6</span><span class="lab">多周期</span></div>
+      <div class="metric"><span class="num" style="color:#f97316">6</span><span class="lab">板块</span></div>
+    </div>
+    <div class="card-foot">
+      <span>更新: 2026-09-03 11:34:38</span>
+      <span class="enter">进入 →</span>
+    </div>
+  </div>
+
+  <!-- 商品月差监控 -->
+  <div class="card enabled">
+    <a class="card-link" href="spread.html"></a>
+    <span class="card-tag tag-live">● 运行中</span>
+    <h2>📅 商品月差监控</h2>
+    <div class="desc">Back/Contango结构 · 月差热力图 · 历史分位 · 日变化榜<br>全部活跃品种 · 双口径(价差/率)</div>
+    <div class="metrics">
+      <div class="metric"><span class="num" style="color:#fbbf24">全品种</span><span class="lab">监控范围</span></div>
+      <div class="metric"><span class="num" style="color:#60a5fa">8</span><span class="lab">月对深度</span></div>
+      <div class="metric"><span class="num" style="color:#f97316">双</span><span class="lab">口径切换</span></div>
+    </div>
+    <div class="card-foot">
+      <span>更新: 2026-09-03 11:34:38</span>
+      <span class="enter">进入 →</span>
+    </div>
+  </div>
+
+  <!-- 基本面日报 -->
+  <div class="card disabled">
+    <span class="card-tag tag-dev">开发中</span>
+    <h2>📋 基本面日报</h2>
+    <div class="desc">库存 / 基差 / 利润 / 开工率 每日产业数据 (规划中)</div>
+    <div class="metrics">
+      <div class="metric"><span class="num" style="color:#475569">—</span><span class="lab">待接入</span></div>
+    </div>
+    <div class="card-foot">
+      <span>敬请期待</span>
+      <span style="color:#475569">开发中</span>
+    </div>
+  </div>
+
+  <!-- 仓单与持仓 -->
+  <div class="card disabled">
+    <span class="card-tag tag-dev">开发中</span>
+    <h2>📦 仓单与持仓</h2>
+    <div class="desc">交易所仓单变化 / 主力持仓 / 席位分析 (规划中)</div>
+    <div class="metrics">
+      <div class="metric"><span class="num" style="color:#475569">—</span><span class="lab">待接入</span></div>
+    </div>
+    <div class="card-foot">
+      <span>敬请期待</span>
+      <span style="color:#475569">开发中</span>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  <div>⚠️ 仅供研究参考，不构成投资建议</div>
+  <div style="margin-top:4px">数据源: TQSdk · 生成于 2026-09-03 11:34:38</div>
+</div>
+
+<script>
+var TOP_OPPS = [];
+var ol = document.getElementById('oppList');
+if(TOP_OPPS.length){
+  ol.style.display='block';
+  TOP_OPPS.forEach(function(o){
+    var r=document.createElement('div'); r.className='opp-row';
+    r.innerHTML='<span class="opp-code">'+o.code+'</span>'
+      +'<span class="opp-pair">'+o.name+' '+o.pair+'</span>'
+      +'<span class="opp-yield">'+o.yield+'%</span>';
+    ol.appendChild(r);
+  });
+}
+// ===== 本机刷新服务联动 =====
+var SVC='http://localhost:8765';
+function chkSvc(){
+  fetch(SVC+'/api/status',{mode:'cors'}).then(function(r){return r.json();}).then(function(s){
+    var dot=document.getElementById('svcDot'),txt=document.getElementById('svcTxt'),btn=document.getElementById('refreshBtn');
+    if(s.running){dot.style.background='#fbbf24';txt.textContent='刷新中…完成后自动发布';btn.disabled=true;}
+    else{dot.style.background='#22c55e';txt.textContent='本机服务在线 · 可刷新';btn.disabled=false;}
+  }).catch(function(){
+    document.getElementById('svcDot').style.background='#64748b';
+    document.getElementById('svcTxt').textContent='本机服务离线(双击 刷新服务.bat 启动)';
+    document.getElementById('refreshBtn').disabled=false;
+  });
+}
+function doRefresh(){
+  var msg=document.getElementById('refreshMsg'); msg.style.display='block';
+  msg.textContent='正在启动刷新…';
+  fetch(SVC+'/api/start').then(function(r){return r.json();}).then(function(d){
+    msg.textContent=d.ok?('✅ '+d.msg+' · 完成后重新打开本页即可'):('⚠️ '+d.msg);
+    if(d.ok) chkSvc();
+  }).catch(function(){
+    msg.textContent='⚠️ 连不上本机刷新服务：请在这台电脑双击 C:\Users\wangkang\carrytrade\刷新服务.bat';
+  });
+}
+chkSvc(); setInterval(chkSvc,5000);
+</script>
+</body>
+</html>
